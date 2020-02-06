@@ -7,6 +7,8 @@ variables:
   MYSQL_USER: myuser
   MYSQL_PASSWORD: 2BtrCM9agZho1wMc9xT1
   MYSQL_DATABASE: db
+  variables:
+  GIT_CLONE_PATH: /var/www/html/uthumbs 
 
 
 before_script:
@@ -16,4 +18,4 @@ job:
   script: echo 'my first job'
 
 
-
+  
