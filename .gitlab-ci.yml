@@ -15,5 +15,7 @@ before_script:
 job:
   script: echo 'my first job'
 
+pre_clone_script:
+    -cd /var/www/html/uthumbs
 
 
