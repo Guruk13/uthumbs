@@ -23,6 +23,14 @@
     "assetBundlePatterns": [
       "**/*"
     ],
+    "android": {
+      "package": "com.u.thumb",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyBsBl4yr24juEs-97Tux4sx_xg0EXqmXSU"
+        }
+      }
+    },
     "ios": {
       "supportsTablet": true
     },
