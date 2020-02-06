@@ -10,8 +10,4 @@ variables:
 
 # Before Script
 before_script:
-  - bash .gitlab-ci.sh > /dev/null
-  - curl -sS https://getcomposer.org/installer | php
-  - php composer.phar install
-  - php bin/console doctrine:database:create --env=dev --if-not-exists
-  - php bin/console doctrine:schema:create --env=dev
+    ./composer.phar install 
