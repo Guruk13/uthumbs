@@ -8,6 +8,12 @@ variables:
   MYSQL_PASSWORD: 2BtrCM9agZho1wMc9xT1
   MYSQL_DATABASE: db
 
-# Before Script
+
 before_script:
     - ./composer.phar install 
+
+job:
+  script: echo 'my first job'
+
+
+
