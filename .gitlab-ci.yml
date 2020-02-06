@@ -11,7 +11,7 @@ variables:
 
 before_script:
     - ./composer.phar install 
-
+    - pwd
 job:
   script: echo 'my first job'
 
