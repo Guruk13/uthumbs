@@ -6,7 +6,7 @@ export class Home extends Component {
     return (
       <View>
         <Text>This is the Settings screen</Text>
-        <Button onPress={() => this.props.navigation.navigate('myMap')} title="Go to map"/>
+        <Button onPress={() => this.props.navigation.navigate('Map')} title="Go to map"/>
       </View>
     )
   }

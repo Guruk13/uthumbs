@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
-import AppNavigator from './AppNavigator';
+import Navigator from './navigation';
 
-export default class App extends React.Component {
+
+export default class App extends Component {
   render() {
     return (
-      <View style={styles.container}>
-        <Text>Hello</Text>
-      </View>
+    <Navigator />
     );
   }
 }
