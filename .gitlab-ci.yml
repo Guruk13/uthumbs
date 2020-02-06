@@ -7,7 +7,6 @@ variables:
   MYSQL_USER: myuser
   MYSQL_PASSWORD: 2BtrCM9agZho1wMc9xT1
   MYSQL_DATABASE: db
-  GIT_CLONE_PATH: /var/www/html/uthumbs 
 
 
 before_script:
