@@ -10,4 +10,4 @@ variables:
 
 # Before Script
 before_script:
-    ./composer.phar install 
+    - ./composer.phar install 
