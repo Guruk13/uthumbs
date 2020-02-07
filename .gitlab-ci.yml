@@ -7,8 +7,6 @@ variables:
 
 
 before_script:
-    - service apache2 stop 
-    - service mysql stop
     - docker-compose up -d 
     - docker-compose exec php sh
     - ./composer.phar install 
