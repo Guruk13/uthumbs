@@ -9,7 +9,6 @@ variables:
 before_script:
     - .symfony/composer.phar install 
     - pwd
-job:
 
 
   
