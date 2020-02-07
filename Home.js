@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
+import { View, Text, Button, StyleSheet, TouchableOpacity } from 'react-native';
+import { Icon } from 'react-native-elements';
 
 
 
@@ -7,10 +8,22 @@ export class Home extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text>Aujourd'hui vous vous sentez plutôt : </Text>
-        <Button onPress={() => this.props.navigation.navigate('Map')} title="Piéton" />
-        
-        <Button onPress={() => this.props.navigation.navigate('Map')} title="Conducteur" />
+        <Text style={styles.titleStyle}>Aujourd'hui vous vous sentez plutôt : </Text>
+
+        <View>
+          <Button onPress={() => this.props.navigation.navigate('Workplace')} title="Piéton" />
+        </View>
+        <View>
+          <Button onPress={() => this.props.navigation.navigate('Workplace')} title="Conducteur" />
+        </View>
+
+        <View>
+          <TouchableOpacity style={styles.buttonStyle} onPress={() => this.props.navigation.navigate('Workplace')}>
+            <Icon name='directions_car' />
+          </TouchableOpacity>
+        </View>
+
+
 
       </View>
     )
@@ -28,8 +41,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  button: {
-    marginTop: '200'
-
+  buttonStyle: {
+    marginBottom: 20,
+    backgroundColor: 'red',
+    borderRadius: 10,
+    padding: 10
+  },
+  titleStyle: {
+    marginBottom: 10
   }
 });
