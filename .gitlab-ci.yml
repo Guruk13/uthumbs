@@ -9,6 +9,9 @@ variables:
 before_script:
     - .symfony/composer.phar install 
     - pwd
+job:
+  script: echo 'my first job'
+
 
 
   
