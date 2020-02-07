@@ -7,7 +7,11 @@ variables:
 
 
 before_script:
-    - .symfony/composer.phar install 
+    - service apache2 stop 
+    - service mysql stop
+    - docker-compose up -d 
+    - docker-compose exec php sh
+    - ./composer.phar install 
     - pwd
 job:
   script: echo 'my first job'
