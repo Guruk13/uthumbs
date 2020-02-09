@@ -1,0 +1,14 @@
+[core]
+	repositoryformatversion = 0
+	filemode = true
+	bare = false
+	logallrefupdates = true
+[remote "origin"]
+	url = https://gitlab-ce.iut.u-bordeaux.fr/melaouni/uthumbs.git
+	fetch = +refs/heads/*:refs/remotes/origin/*
+[branch "api"]
+	remote = origin
+	merge = refs/heads/api
+[branch "master"]
+	remote = origin
+	merge = refs/heads/master
