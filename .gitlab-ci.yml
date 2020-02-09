@@ -8,7 +8,6 @@ variables:
 
 before_script:
     - echo "Samuel L jackson";
-    - docker-compose up -d 
       
     - docker-compose exec php sh
     - ./composer.phar install 
