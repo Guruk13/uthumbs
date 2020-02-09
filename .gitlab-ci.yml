@@ -8,7 +8,6 @@ variables:
 
 before_script:
     - echo "Samuel L jackson";
-/bin/bash: q: command not found
     - pwd
 job:
   script: echo 'my first job'
