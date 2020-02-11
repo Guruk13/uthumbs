@@ -36,6 +36,7 @@ class LocationController  extends FOSRestController
     public function getRides(): View
     {
         $locations = $this->locationRepository->findAll();
+        dd($locations);
         // In case our GET was a success we need to return a 200 HTTP OK response with the collection of article object
         return View::create($locations, Response::HTTP_OK);
     }
