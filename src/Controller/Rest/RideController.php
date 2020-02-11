@@ -31,7 +31,7 @@ class RideController  extends FOSRestController
 
     /**
      * Retrieves a collection of Ride resource
-     * @Rest\Get("/articles")
+     * @Rest\Get("/rides")
      */
     public function getRides(): View
     {

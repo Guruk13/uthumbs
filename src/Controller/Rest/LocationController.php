@@ -35,7 +35,7 @@ class LocationController  extends FOSRestController
      */
     public function getLocations(): View
     {
-        dd("hello");
+        
         $repository = $this->getDoctrine()->getRepository(Location::class);
         $locations =  $repository->findAll(); 
         
