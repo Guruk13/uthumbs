@@ -1,5 +1,5 @@
 <?php
-
+//https://www.thinktocode.com/2018/03/26/symfony-4-rest-api-part-1-fosrestbundle/
     namespace App\Controller\Rest;
 //Business
 use App\Entity\Ride;
