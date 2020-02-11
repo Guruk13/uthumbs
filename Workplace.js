@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
-import { View, Text, Button, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, Text, Button, StyleSheet, TouchableOpacity, Image, Dimensions } from 'react-native';
 import { connect } from 'react-redux'
+
+const dimensions = Dimensions.get('window');
+const imageHeight = Math.round(dimensions.width * 9 / 40);
+const imageWidth = dimensions.width - 20;
 
 
 class Workplace extends Component {
@@ -17,41 +21,46 @@ class Workplace extends Component {
         return (
             <View style={styles.container}>
                 <View >
-                    <Text style={styles.title}>Où est-ce que vous allez aujourd'hui ? </Text>
+                    <Text style={styles.title}>Je veux aller au campus ...</Text>
                 </View>
 
 
                 <View style={styles.imagesContainer}>
                     <View style={styles.touchableSyle}>
-                        <TouchableOpacity onPress={() => {this.props.navigation.navigate('Map'); this.setDestination('TALENCE')}}>
+                        <TouchableOpacity onPress={() => { this.props.navigation.navigate('Map'); this.setDestination('TALENCE') }}>
                             <Image style={styles.image}
-                                source={require('./test.jpg')} />
+                                source={require('./public/imgs/talence.png')} />
                         </TouchableOpacity>
                     </View>
 
                     <View style={styles.touchableSyle}>
-                        <TouchableOpacity onPress={() => {this.props.navigation.navigate('Map'); this.setDestination('MONTAIGNE')}}>
+                        <TouchableOpacity onPress={() => { this.props.navigation.navigate('Map'); this.setDestination('MONTAIGNE') }}>
                             <Image style={styles.image}
-                                source={require('./test2.jpg')} />
+                                source={require('./public/imgs/montaigne.png')} />
                         </TouchableOpacity>
                     </View>
 
                     <View style={styles.touchableSyle}>
-                        <TouchableOpacity onPress={() => {this.props.navigation.navigate('Map'); this.setDestination('CARREIRE')}}>
+                        <TouchableOpacity onPress={() => { this.props.navigation.navigate('Map'); this.setDestination('CARREIRE') }}>
                             <Image style={styles.image}
-                                source={require('./test3.jpg')} />
+                                source={require('./public/imgs/carreire.png')} />
                         </TouchableOpacity>
                     </View>
 
                     <View style={styles.touchableSyle}>
-                        <TouchableOpacity onPress={() => {this.props.navigation.navigate('Map'); this.setDestination('VICTOIRE')}}>
+                        <TouchableOpacity onPress={() => { this.props.navigation.navigate('Map'); this.setDestination('VICTOIRE') }}>
                             <Image style={styles.image}
-                                source={require('./test4.jpg')} />
+                                source={require('./public/imgs/victoire.png')} />
                         </TouchableOpacity>
                     </View>
 
+                    <View style={styles.touchableSyle}>
+                        <TouchableOpacity onPress={() => { this.props.navigation.navigate('Map'); this.setDestination('BASTIDE') }}>
+                            <Image style={styles.image}
+                                source={require('./public/imgs/bastide.png')} />
+                        </TouchableOpacity>
+                    </View>
                 </View>
-
             </View>
         )
     }
@@ -76,29 +85,24 @@ const styles = StyleSheet.create({
         marginTop: '200'
     },
     image: {
-        width: 150,
-        height: 150,
-        borderRadius: 20,
+        width: imageWidth,
+        height: imageHeight,
+        borderRadius: 10,
     },
     title: {
-        fontSize: 20,
-        backgroundColor: "#a64253",
+        fontSize: 30,
         textAlign: "center",
-        margin: 15,
-        color: 'white',
-        borderColor: 'black',
-        borderWidth: 1,
-        borderRadius: 10,
-        marginBottom: 70
+        margin: 5,
+        color: 'black',
+        fontWeight: 'bold',
+        marginBottom: 30
     },
     imagesContainer: {
         flex: 1,
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        flexWrap: 'wrap',
+        flexDirection: 'column',
     },
     touchableSyle: {
-        marginBottom: 60
+        marginBottom: 20
     }
 });
 

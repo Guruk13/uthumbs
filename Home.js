@@ -9,18 +9,17 @@ export class Home extends Component {
     return (
       <View style={styles.container}>
         <Image style={styles.logoStyle}
-              source={require('./logoFullWhite.png')} />
-
+              source={require('./public/imgs/logoFullWhite.png')} />
         <View style={styles.imagesContainer}>
           <Text style={styles.titleStyle}>Vous avez un imprévu ? </Text>
-          <TouchableOpacity style={styles.touchableStyle} onPress={() => this.props.navigation.navigate('Workplace')}>
+          <TouchableOpacity style={styles.touchableStyle} onPress={() => this.props.navigation.navigate('Waiting')}>
             <Image style={styles.imageStyle}
-              source={require('./pieton.png')} />
+              source={require('./public/imgs/pieton.png')} />
           </TouchableOpacity>
           <Text style={styles.titleStyle}>Vous souhaitez aider ? </Text>
           <TouchableOpacity style={styles.touchableStyle} onPress={() => this.props.navigation.navigate('Workplace')}>
             <Image style={styles.imageStyle}
-              source={require('./conducteur.png')} />
+              source={require('./public/imgs/conducteur.png')} />
           </TouchableOpacity>
         </View>
 
@@ -39,8 +38,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#a64253',
     alignItems: 'center',
     justifyContent: 'center',
-  
-
   },
   imageStyle: {
     backgroundColor: 'white',

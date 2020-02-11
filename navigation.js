@@ -3,6 +3,7 @@ import { createAppContainer } from 'react-navigation';
 import Home from './Home';
 import myMap from './Map';
 import Workplace from './Workplace';
+import Waiting  from './Waiting';
 
 
 const MyStackNavigator = createStackNavigator({
@@ -14,6 +15,9 @@ const MyStackNavigator = createStackNavigator({
     },
     Workplace: {
       screen : Workplace
+    },
+    Waiting: {
+      screen : Waiting
     }
   })
 
