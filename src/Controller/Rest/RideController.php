@@ -2,8 +2,8 @@
 
     namespace App\Controller\Rest;
 //Business
-//Technical 
 use App\Entity\Ride;
+//Technical 
 use Symfony\Component\Routing\Annotation\Route;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest ;
