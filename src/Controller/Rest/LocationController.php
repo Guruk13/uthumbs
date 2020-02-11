@@ -33,8 +33,9 @@ class LocationController  extends FOSRestController
      * Retrieves a collection of Location resource
      * @Rest\Get("/locations")
      */
-    public function getRides(): View
+    public function getLocations(): View
     {
+        dd("hello");
         $repository = $this->getDoctrine()->getRepository(Location::class);
         $locations =  $repository->findAll(); 
         

@@ -20,7 +20,7 @@ class RideController  extends FOSRestController
      * @param Request $request
      * @return View
      */
-    public function postArticle(Request $request): View
+    public function postRide(Request $request): View
     {
         $article = new Ride();
         $article->setPassengerRoom($request->get('passengerVolume'));
