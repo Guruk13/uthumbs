@@ -1,9 +1,18 @@
 import React, { Component } from 'react';
 import { View, Text, Button, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { connect } from 'react-redux'
 
 
-
-export class Workplace extends Component {
+class Workplace extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            destination: {
+                latitude: 0,
+                longitude: 0
+            }
+        };
+    }
     render() {
         return (
             <View style={styles.container}>
@@ -14,28 +23,28 @@ export class Workplace extends Component {
 
                 <View style={styles.imagesContainer}>
                     <View style={styles.touchableSyle}>
-                        <TouchableOpacity onPress={() => this.props.navigation.navigate('Map')}>
+                        <TouchableOpacity onPress={() => {this.props.navigation.navigate('Map'); this.setDestination('TALENCE')}}>
                             <Image style={styles.image}
                                 source={require('./test.jpg')} />
                         </TouchableOpacity>
                     </View>
 
                     <View style={styles.touchableSyle}>
-                        <TouchableOpacity onPress={() => this.props.navigation.navigate('Map')}>
+                        <TouchableOpacity onPress={() => {this.props.navigation.navigate('Map'); this.setDestination('MONTAIGNE')}}>
                             <Image style={styles.image}
                                 source={require('./test2.jpg')} />
                         </TouchableOpacity>
                     </View>
 
                     <View style={styles.touchableSyle}>
-                        <TouchableOpacity onPress={() => this.props.navigation.navigate('Map')}>
+                        <TouchableOpacity onPress={() => {this.props.navigation.navigate('Map'); this.setDestination('CARREIRE')}}>
                             <Image style={styles.image}
                                 source={require('./test3.jpg')} />
                         </TouchableOpacity>
                     </View>
 
                     <View style={styles.touchableSyle}>
-                        <TouchableOpacity onPress={() => this.props.navigation.navigate('Map')}>
+                        <TouchableOpacity onPress={() => {this.props.navigation.navigate('Map'); this.setDestination('VICTOIRE')}}>
                             <Image style={styles.image}
                                 source={require('./test4.jpg')} />
                         </TouchableOpacity>
@@ -46,11 +55,15 @@ export class Workplace extends Component {
             </View>
         )
     }
+
+    setDestination(nomDestination) {
+        const action = {
+            type: nomDestination,
+            value: this.state.destination
+        }
+        this.props.dispatch(action)
+    }
 };
-
-export default Workplace;
-
-
 
 const styles = StyleSheet.create({
     container: {
@@ -88,3 +101,10 @@ const styles = StyleSheet.create({
         marginBottom: 60
     }
 });
+
+const mapStateToProps = (state) => {
+    return {
+        destination: state.destination
+    };
+}
+export default connect(mapStateToProps)(Workplace);
