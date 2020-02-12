@@ -9,7 +9,7 @@ export class Waiting extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      dialogOpen: true
+      dialogOpen: false
     };
   }
   render() {
@@ -38,6 +38,7 @@ export class Waiting extends Component {
               <DialogButton
                 text="OK"
                 onPress={() => {
+                  this.setState({ dialogOpen: false })
                   this.props.navigation.navigate('Home')
                 }}
               />
