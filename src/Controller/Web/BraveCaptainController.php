@@ -8,7 +8,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class BraveCaptainController extends AbstractController
 {
     /**
-     * @Route("/", name="brave_captain")
+     * @Route("/hello", name="brave_captain")
      */
     public function index()
     {
