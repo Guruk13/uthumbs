@@ -24,38 +24,37 @@ class Workplace extends Component {
                     <Text style={styles.title}>Je veux aller au campus ...</Text>
                 </View>
 
-
                 <View style={styles.imagesContainer}>
                     <View style={styles.touchableSyle}>
-                        <TouchableOpacity onPress={() => { this.props.navigation.navigate('Map'); this.setDestination('TALENCE') }}>
+                        <TouchableOpacity onPress={() => { this.redirect(); this.setDestination('TALENCE') }}>
                             <Image style={styles.image}
                                 source={require('./public/imgs/talence.png')} />
                         </TouchableOpacity>
                     </View>
 
                     <View style={styles.touchableSyle}>
-                        <TouchableOpacity onPress={() => { this.props.navigation.navigate('Map'); this.setDestination('MONTAIGNE') }}>
+                        <TouchableOpacity onPress={() => { this.redirect(); this.setDestination('MONTAIGNE') }}>
                             <Image style={styles.image}
                                 source={require('./public/imgs/montaigne.png')} />
                         </TouchableOpacity>
                     </View>
 
                     <View style={styles.touchableSyle}>
-                        <TouchableOpacity onPress={() => { this.props.navigation.navigate('Map'); this.setDestination('CARREIRE') }}>
+                        <TouchableOpacity onPress={() => { this.redirect(); this.setDestination('CARREIRE') }}>
                             <Image style={styles.image}
                                 source={require('./public/imgs/carreire.png')} />
                         </TouchableOpacity>
                     </View>
 
                     <View style={styles.touchableSyle}>
-                        <TouchableOpacity onPress={() => { this.props.navigation.navigate('Map'); this.setDestination('VICTOIRE') }}>
+                        <TouchableOpacity onPress={() => { this.redirect(); this.setDestination('VICTOIRE') }}>
                             <Image style={styles.image}
                                 source={require('./public/imgs/victoire.png')} />
                         </TouchableOpacity>
                     </View>
 
                     <View style={styles.touchableSyle}>
-                        <TouchableOpacity onPress={() => { this.props.navigation.navigate('Map'); this.setDestination('BASTIDE') }}>
+                        <TouchableOpacity onPress={() => { this.redirect(); this.setDestination('BASTIDE') }}>
                             <Image style={styles.image}
                                 source={require('./public/imgs/bastide.png')} />
                         </TouchableOpacity>
@@ -64,13 +63,20 @@ class Workplace extends Component {
             </View>
         )
     }
-
     setDestination(nomDestination) {
         const action = {
             type: nomDestination,
             value: this.state.destination
         }
         this.props.dispatch(action)
+    }
+    redirect() {
+        console.log(this.props.userStatus);
+        if (this.props.userStatus == "pedestrian") {
+            this.props.navigation.navigate('Waiting');
+        } else {
+            this.props.navigation.navigate('Map');
+        }
     }
 };
 
@@ -108,7 +114,9 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => {
     return {
-        destination: state.destination
+        destination: state.destination,
+        userStatus: state.userStatus.userStatus
     };
 }
+
 export default connect(mapStateToProps)(Workplace);

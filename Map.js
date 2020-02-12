@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => {
   return {
-    destination: state.destination
+    destination: state.destination.destination
   };
 }
 export default connect(mapStateToProps)(Map);
