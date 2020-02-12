@@ -1,3 +1,10 @@
+  
+
+kernel:
+    resource: ../../src/Kernel.php
+    type: annotation
+
+
 rest_controller:
     resource: ../../src/Controller/Rest/
     type: annotation
@@ -5,8 +12,5 @@ rest_controller:
 web_controller:
     resource: ../../src/Controller/Web/
     type: annotation
-   
+ 
 
-kernel:
-    resource: ../../src/Kernel.php
-    type: annotation

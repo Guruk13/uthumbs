@@ -12,6 +12,7 @@ class BraveCaptainController extends AbstractController
      */
     public function index()
     {
+        dd("hello");
         return $this->render('brave_captain/index.html.twig', [
             'controller_name' => 'BraveCaptainController',
         ]);
