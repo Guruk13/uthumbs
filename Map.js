@@ -50,12 +50,7 @@ class Map extends Component {
           latitude,
           longitude,
         };
-
-        if (Platform.OS === 'android') {
-          if (this.marker) {
-            this.marker._component.animateMarkerToCoordinate(newCoordinate, 500); // 500 is the duration to animate the marker
-          }
-        } else {
+        if (this.marker) {
           coordinate.timing(newCoordinate).start();
         }
 
@@ -121,7 +116,7 @@ class Map extends Component {
             coordinate={this.state.coordinate}
           />
           <MapViewDirections
-            origin={{latitude: this.state.latitude, longitude: this.state.longitude}}
+            origin={{ latitude: this.state.latitude, longitude: this.state.longitude }}
             destination={this.props.destination}
             apikey={GOOGLE_MAPS_APIKEY}
             strokeWidth={5}
