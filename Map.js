@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import MapView, { PROVIDER_GOOGLE, AnimatedRegion, Marker } from 'react-native-maps';
-import { AppRegistry, View, StyleSheet, Dimensions, Button, Text } from 'react-native';
+import { AppRegistry, View, StyleSheet, Dimensions, TouchableOpacity, Text } from 'react-native';
 import MapViewDirections from 'react-native-maps-directions';
 import { connect } from 'react-redux'
 import PubNubReact from "pubnub-react";
+import * as Font from 'expo-font';
 
 const { width, height } = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
@@ -25,7 +26,8 @@ class Map extends Component {
         longitude: LONGITUDE,
         latitudeDelta: 0,
         longitudeDelta: 0
-      })
+      }),
+      fontLoaded : false
     };
 
     this.pubnub = new PubNubReact({
@@ -35,7 +37,14 @@ class Map extends Component {
     this.pubnub.init(this);
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    await Font.loadAsync({
+      'Montserrat-Regular': require('./assets/fonts/Montserrat-Regular.ttf'),
+      'Montserrat-Bold': require('./assets/fonts/Montserrat-Bold.ttf'),
+    });
+
+    this.setState({ fontLoaded: true });
+
     this.watchLocation();
   }
 
@@ -121,19 +130,21 @@ class Map extends Component {
             coordinate={this.state.coordinate}
           />
           <MapViewDirections
-            origin={{latitude: this.state.latitude, longitude: this.state.longitude}}
+            origin={{ latitude: this.state.latitude, longitude: this.state.longitude }}
             destination={this.props.destination}
             apikey={GOOGLE_MAPS_APIKEY}
             strokeWidth={5}
             strokeColor="#a64253"
           />
         </MapView>
-        <View style={styles.button}>
-          <Button
-            title="GO"
-            color="white"
-            onPress={() => this.setState({ followsUserLocation: true })}
-          />
+        <View style={styles.buttonArea}>
+          {
+        this.state.fontLoaded ? ( 
+          <TouchableOpacity style={{alignItems: 'center'}}>
+            <Text style={{ fontSize: 21, fontFamily: 'Montserrat-Bold', paddingTop: '7%', paddingBottom: '7%' }}>Départ</Text>
+          </TouchableOpacity>
+        ) : null
+          }
         </View>
       </View>
     );
@@ -150,15 +161,14 @@ const styles = StyleSheet.create({
   map: {
     ...StyleSheet.absoluteFillObject,
   },
-  button: {
+  buttonArea: {
     flex: 1,
     alignSelf: 'center',
     position: 'absolute',
-    bottom: "20%",
-    backgroundColor: "#a64253",
-    width: 250,
+    bottom: "10%",
+    backgroundColor: "#FAFAFA",
+    width: 280,
     borderRadius: 10
-
   }
 });
 
