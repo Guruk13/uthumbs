@@ -71,7 +71,6 @@ class Workplace extends Component {
         this.props.dispatch(action)
     }
     redirect() {
-        console.log(this.props.userStatus);
         if (this.props.userStatus == "pedestrian") {
             this.props.navigation.navigate('Waiting');
         } else {

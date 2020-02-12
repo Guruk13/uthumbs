@@ -82,7 +82,6 @@ const styles = StyleSheet.create({
 
 
 const mapStateToProps = (state) => {
-  console.log(state.userStatus.userStatus);
   return {
     userIsDriver: state.userIsDriver
   };
