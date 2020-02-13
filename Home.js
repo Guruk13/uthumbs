@@ -30,6 +30,10 @@ class Home extends Component {
             <Image style={styles.imageStyle}
               source={require('./public/imgs/conducteur.png')} />
           </TouchableOpacity>
+
+          <TouchableOpacity style={styles.touchableStyle} onPress={() => { this.props.navigation.navigate('Swiper'); this.setUserStatus('DRIVER') }}>
+            <Text>Test</Text>
+          </TouchableOpacity>
         </View>
       </View>
     )

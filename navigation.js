@@ -4,7 +4,7 @@ import Home from './Home';
 import myMap from './Map';
 import Workplace from './Workplace';
 import Waiting  from './Waiting';
-
+import Swiper from './SwiperPage';
 
 const MyStackNavigator = createStackNavigator({
     Home: {
@@ -18,6 +18,9 @@ const MyStackNavigator = createStackNavigator({
     },
     Waiting: {
       screen : Waiting
+    },
+    Swiper: {
+      screen : Swiper
     }
   })
 

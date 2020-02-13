@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Button, StyleSheet, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
+import { View, Text, Button, StyleSheet, TouchableOpacity, Image, ActivityIndicator, AppRegistry } from 'react-native';
 import AnimatedEllipsis from 'react-native-animated-ellipsis';
 import Dialog, { SlideAnimation, DialogContent, DialogFooter, DialogButton, PopupDialog } from 'react-native-popup-dialog';
 import * as Font from 'expo-font';
