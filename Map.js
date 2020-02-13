@@ -59,12 +59,7 @@ class Map extends Component {
           latitude,
           longitude,
         };
-
-        if (Platform.OS === 'android') {
-          if (this.marker) {
-            this.marker._component.animateMarkerToCoordinate(newCoordinate, 500); // 500 is the duration to animate the marker
-          }
-        } else {
+        if (this.marker) {
           coordinate.timing(newCoordinate).start();
         }
 
