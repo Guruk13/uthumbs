@@ -15,13 +15,19 @@ services:
     # this creates a service per class whose id is the fully-qualified class name
     App\:
         resource: '../src/*'
-        exclude: '../src/{DependencyInjection,DataFixtureis, Entity,Migrations,Tests,Kernel.php}'
+        exclude: '../src/{DependencyInjection, Entity,Migrations,Tests,Kernel.php}'
 
     # controllers are imported separately to make sure services can be injected
     # as action arguments even if you don't extend any base controller class
     App\Controller\:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
+    
+    #App\DataFixtures\:
+    #    resource: '../src/DataFixtures/'
+    #    tags: ['doctrine.fixture.orm']
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+    # makes classes in src/AppBundle/DataFixtures available to be used as services
+    # and have a tag that allows actions to type-hint services

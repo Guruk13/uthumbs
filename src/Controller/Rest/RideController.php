@@ -14,20 +14,20 @@ use FOS\RestBundle\View\View;
 
 class RideController  extends FOSRestController
 {
-    /**
-     * Creates an Ride resource
-     * @Rest\Post("/rides")
-     * @param Request $request
-     * @return View
-     */
-    public function postRide(Request $request): View
-    {
-        $article = new Ride();
-        $article->setPassengerRoom($request->get('passengerVolume'));
-        $this->articleRepository->save($article);
-        // In case our POST was a success we need to return a 201 HTTP CREATED response
-        return View::create($article, Response::HTTP_CREATED);
-    }
+        /**
+         * Creates an Ride resource
+         * @Rest\Post("/rides")
+         * @param Request $request
+         * @return View
+         */
+        public function postRide(Request $request): View
+        {
+            $article = new Ride();
+            $article->setPassengerRoom($request->get('passengerVolume'));
+            $this->articleRepository->save($article);
+            // In case our POST was a success we need to return a 201 HTTP CREATED response
+            return View::create($article, Response::HTTP_CREATED);
+        }
 
     /**
      * Retrieves a collection of Ride resource
