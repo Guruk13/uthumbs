@@ -29,7 +29,7 @@ class LocationController  extends FOSRestController
         $location->setLatitude($request->get('longitude'));
         $location->setLatitude($request->get('latitude'));
         $location->setLatitude($request->get('name'));
-
+        dump($location);
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->persist($location);
 
