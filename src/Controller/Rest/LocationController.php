@@ -39,13 +39,6 @@ class LocationController  extends FOSRestController
         $location = new Location();
         $okaydumper =  $request->getContent();
         $location = $serializer->deserialize($okaydumper, Location::class, 'json');
-
-
-        $location->setLatitude($request->get('longitude'));
-        $location->setLatitude($request->get('latitude'));
-        $location->setLatitude($request->get('name'));
-        dump($request);
-        dump($location);
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->persist($location);
 
