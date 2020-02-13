@@ -11,6 +11,12 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\View\View;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Encoder\XmlEncoder;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Serializer;
+
+
 
 
 
@@ -24,11 +30,21 @@ class LocationController  extends FOSRestController
      */
     public function postLocation(Request $request): View
     {
-        
+        //encode/decode 
+        $encoders = [new XmlEncoder(), new JsonEncoder()];
+        $normalizers = [new ObjectNormalizer()];
+        $serializer = new Serializer($normalizers, $encoders);
+
+
         $location = new Location();
+        $okaydumper =  $request->getContent();
+        $location = $serializer->deserialize($okaydumper, Location::class, 'json');
+
+
         $location->setLatitude($request->get('longitude'));
         $location->setLatitude($request->get('latitude'));
         $location->setLatitude($request->get('name'));
+        dump($request);
         dump($location);
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->persist($location);
