@@ -29,8 +29,7 @@ export default class SwiperPage extends Component {
         <View style={styles.slide3}>
           <Image style={styles.logoStyle}
             source={require('./public/imgs/logoFullWhite.png')} />
-          <Image style={styles.image}
-            source={require('./test.jpg')} />
+          
           <Text style={styles.text}>Se connecter</Text>
           <TextInput
             style={styles.inputStyle}
