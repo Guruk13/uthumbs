@@ -168,7 +168,12 @@ const styles = StyleSheet.create({
     bottom: "10%",
     backgroundColor: "#FAFAFA",
     width: 280,
-    borderRadius: 10
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,  
+    elevation: 5
   }
 });
 
