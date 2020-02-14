@@ -100,9 +100,10 @@ class LocationController  extends FOSRestController
      */
     public function deleteLocation(int $locationId): View
     {
-        $location = $this->locationRepository->findById($locationId);
+        $repository = $this->getDoctrine()->getRepository(Location::class);
+        $location = $repository->findById($locationId);
         if ($location) {
-            $this->locationRepository->delete($location);
+            $this->$repository->delete($location);
         }
         // In case our DELETE was a success we need to return a 204 HTTP NO CONTENT response. The object is deleted.
         return View::create([], Response::HTTP_NO_CONTENT);

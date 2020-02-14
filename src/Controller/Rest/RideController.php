@@ -23,12 +23,12 @@ use Symfony\Component\Serializer\Serializer;
 class RideController  extends FOSRestController
 {
     /**
-     * Creates an Location resource
+     * Creates an Ride resource
      * @Rest\Post("/rides")
      * @param Request $request
      * @return View 
      */
-    public function postLocation(Request $request): View
+    public function postRide(Request $request): View
     {
         //encode/decode 
         $encoders = [new XmlEncoder(), new JsonEncoder()];
@@ -36,28 +36,28 @@ class RideController  extends FOSRestController
         $serializer = new Serializer($normalizers, $encoders);
 
 
-        $location = new Ride();
+        $ride = new Ride();
         $okaydumper =  $request->getContent();
-        $location = $serializer->deserialize($okaydumper, Ride::class, 'json');
+        $ride = $serializer->deserialize($okaydumper, Ride::class, 'json');
         $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->persist($location);
+        $entityManager->persist($ride);
 
         // actually executes the queries (i.e. the INSERT query)
         $entityManager->flush();
-        return View::create($location, Response::HTTP_CREATED);
+        return View::create($ride, Response::HTTP_CREATED);
     }
 
     /**
-     * Retrieves a collection of Location resource
-     * @Rest\Get("/locations")
+     * Retrieves a collection of Ride resource
+     * @Rest\Get("/rides")
      */
-    public function getLocations(): View
+    public function getRides(): View
     {
 
-        $repository = $this->getDoctrine()->getRepository(Location::class);
-        $locations =  $repository->findAll();
+        $repository = $this->getDoctrine()->getRepository(Ride::class);
+        $rides =  $repository->findAll();
 
         // In case our GET was a success we need to return a 200 HTTP OK response with the collection of article object
-        return View::create($locations, Response::HTTP_OK);
+        return View::create($rides, Response::HTTP_OK);
     }
 }
