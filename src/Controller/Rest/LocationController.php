@@ -17,9 +17,6 @@ use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 
 
-
-
-
 class LocationController  extends FOSRestController
 {
     /**
@@ -37,7 +34,17 @@ class LocationController  extends FOSRestController
 
 
         $location = new Location();
-        $okaydumper =  $request->getContent();
+        $okaydumper =  $request->getContent();  
+        dump($request);
+
+
+
+
+
+
+
+
+
         $location = $serializer->deserialize($okaydumper, Location::class, 'json');
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->persist($location);
