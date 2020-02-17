@@ -5,12 +5,13 @@ import MapViewDirections from 'react-native-maps-directions';
 import { connect } from 'react-redux'
 import PubNubReact from "pubnub-react";
 import * as Font from 'expo-font';
+import * as Location from 'expo-location';
 
 const { width, height } = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
 const LATITUDE = 37.78825;
 const LONGITUDE = -122.4324;
-const LATITUDE_DELTA = 0.0122;
+const LATITUDE_DELTA = 0.005;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 const SPACE = 0.01;
 const GOOGLE_MAPS_APIKEY = 'AIzaSyB2sGMhio_-YehtPloM5a2qjFnojLzil2k';
@@ -27,7 +28,9 @@ class Map extends Component {
         latitudeDelta: 0,
         longitudeDelta: 0
       }),
-      fontLoaded : false
+      fontLoaded: false,
+      courseStarted: false,
+      ready : false
     };
 
     this.pubnub = new PubNubReact({
@@ -38,6 +41,8 @@ class Map extends Component {
   }
 
   async componentDidMount() {
+    Location.requestPermissionsAsync();
+
     await Font.loadAsync({
       'Montserrat-Regular': require('./assets/fonts/Montserrat-Regular.ttf'),
       'Montserrat-Bold': require('./assets/fonts/Montserrat-Bold.ttf'),
@@ -90,27 +95,42 @@ class Map extends Component {
     }
   }
 
-  getMapRegion = () => ({
-    latitude: this.state.latitude,
-    longitude: this.state.longitude,
-    latitudeDelta: LATITUDE_DELTA,
-    longitudeDelta: LONGITUDE_DELTA
-  });
-
   componentWillUnmount() {
     navigator.geolocation.clearWatch(this.watchID);
+  }
+
+  focusLoc = () => {
+    if(this.state.ready){
+      if(this.state.courseStarted){
+    region = {
+      latitude: this.state.latitude,
+      longitude: this.state.longitude,
+      latitudeDelta: LATITUDE_DELTA,
+      longitudeDelta: LONGITUDE_DELTA
+    };
+
+    this.map.animateToRegion(region, 2000);
+  }
+}
+  }
+
+  onMapReady = (e) => {
+    if(!this.state.ready) {
+      this.setState({ready: true});
+    }
   }
 
   render() {
     return (
       <View style={styles.container}>
         <MapView
+          ref={ref => (this.map = ref)}
           provider={PROVIDER_GOOGLE}
           style={styles.map}
-          region={this.getMapRegion()}
-          showsUserLocation={true}
+          onMapReady={this.onMapReady}
+          region={{ latitude: this.state.latitude, longitude: this.state.longitude, latitudeDelta: LATITUDE_DELTA, longitudeDelta: LONGITUDE_DELTA }}
           followsUserLocation={true}
-          onRegionChange={this._handleMapRegionChange}>
+          onRegionChangeComplete={this.focusLoc}>
           <MapView.Marker
             coordinate={
               this.props.destination
@@ -134,11 +154,11 @@ class Map extends Component {
         </MapView>
         <View style={styles.buttonArea}>
           {
-        this.state.fontLoaded ? ( 
-          <TouchableOpacity style={{alignItems: 'center'}}>
-            <Text style={{ fontSize: 21, fontFamily: 'Montserrat-Bold', paddingTop: '7%', paddingBottom: '7%' }}>Départ</Text>
-          </TouchableOpacity>
-        ) : null
+            this.state.fontLoaded ? (
+              <TouchableOpacity style={{ alignItems: 'center' }} onPress={() => { this.setState({ courseStarted: !this.state.courseStarted }) }}>
+                <Text style={{ fontSize: 21, fontFamily: 'Montserrat-Bold', paddingTop: '7%', paddingBottom: '7%' }}>{this.state.courseStarted ? 'Terminé' : 'Départ'}</Text>
+              </TouchableOpacity>
+            ) : null
           }
         </View>
       </View>
@@ -167,7 +187,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.8,
-    shadowRadius: 2,  
+    shadowRadius: 2,
     elevation: 5
   }
 });
