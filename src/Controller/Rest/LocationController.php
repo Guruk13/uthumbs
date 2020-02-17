@@ -15,6 +15,7 @@ use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 class LocationController  extends FOSRestController
 {
@@ -97,13 +98,15 @@ class LocationController  extends FOSRestController
     /**
      * Removes the Location resource
      * @Rest\Delete("/locations/{locationId}")
+     * @ParamConverter("location", options={"mapping": {"locationId" : "id"}})
      */
-    public function deleteLocation(int $locationId): View
+    public function deleteLocation(Location $location): View
     {
         $repository = $this->getDoctrine()->getRepository(Location::class);
-        $location = $repository->findById($locationId);
         if ($location) {
-            $this->$repository->delete($location);
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->remove($location);
+            $entityManager->flush();
         }
         // In case our DELETE was a success we need to return a 204 HTTP NO CONTENT response. The object is deleted.
         return View::create([], Response::HTTP_NO_CONTENT);

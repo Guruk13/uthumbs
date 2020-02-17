@@ -18,8 +18,6 @@ use Symfony\Component\Serializer\Serializer;
 
 
 
-
-
 class RideController  extends FOSRestController
 {
     /**
@@ -53,7 +51,6 @@ class RideController  extends FOSRestController
      */
     public function getRides(): View
     {
-
         $repository = $this->getDoctrine()->getRepository(Ride::class);
         $rides =  $repository->findAll();
 
@@ -63,7 +60,7 @@ class RideController  extends FOSRestController
 
     /**
      * Retrieves an Ride resource
-     * @Rest\Get("/rides/{ridesId}")
+     * @Rest\Get("/rides/{rideId}")
      */
     public function getRide(int $rideId): View
     {
