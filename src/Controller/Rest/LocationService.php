@@ -3,20 +3,17 @@
 namespace App\Controller\Rest;  
 //Business
 use App\Entity\Location;
-use App\Repository\LocationRepositoryInterface;
 
 
 
-class LocationService
+class LocationService 
 {
-    /**
-     * @var LocationRepositoryInterface
-     */
+ 
     private $locationRepository;
-    public function __construct(LocationRepositoryInterface $locationRepository)
+    public function __construct()
     {
-        $this->locationRepository = $locationRepository;
-    }
+        $this->locationRepository = $this->getDoctrine()->getRepository(Location::class);
+    }   
     public function getLocation(int $locationId): ?Location
     {
         return $this->locationRepository->findById($locationId);
