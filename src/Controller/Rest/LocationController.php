@@ -29,8 +29,9 @@ class LocationController  extends FOSRestController
      */
     public function postLocation(Request $request): View
     {
-
+        $mediaType = $request->attributes->get('media_type');
         //encode/decode 
+        dump($mediaType);
         $encoders = [new XmlEncoder(), new JsonEncoder()];
         $normalizers = [new ObjectNormalizer()];
         $serializer = new Serializer($normalizers, $encoders);
@@ -112,6 +113,4 @@ class LocationController  extends FOSRestController
         return View::create([], Response::HTTP_NO_CONTENT);
     }
 
-
-//====================================================================================================
 }
