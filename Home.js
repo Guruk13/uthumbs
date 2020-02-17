@@ -5,8 +5,6 @@ import { connect } from 'react-redux'
 import { Logs } from 'expo';
 
 
-
-
 class Home extends Component {
   constructor(props) {
     super(props);
@@ -31,9 +29,7 @@ class Home extends Component {
               source={require('./public/imgs/conducteur.png')} />
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.touchableStyle} onPress={() => { this.props.navigation.navigate('Swiper'); this.setUserStatus('DRIVER') }}>
-            <Text>Test</Text>
-          </TouchableOpacity>
+          
         </View>
       </View>
     )

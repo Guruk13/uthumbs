@@ -2,11 +2,13 @@ import React, { Component } from 'react';
 import { View, Text, Button, StyleSheet, TouchableOpacity, Image, ActivityIndicator, AppRegistry } from 'react-native';
 import AnimatedEllipsis from 'react-native-animated-ellipsis';
 import Dialog, { SlideAnimation, DialogContent, DialogFooter, DialogButton, PopupDialog } from 'react-native-popup-dialog';
+import { connect } from 'react-redux'
+
 import * as Font from 'expo-font';
 
 
 
-export class Waiting extends Component {
+class Waiting extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -30,7 +32,8 @@ export class Waiting extends Component {
         {
           this.state.fontLoaded ? (
             <View style={styles.titleContainer}>
-              <Text style={styles.title}>En attente d'un conducteur</Text>
+              <Text style={styles.title}>En attente d'un conducteur à destination de {this.props.destination.nom}
+              </Text>
               <AnimatedEllipsis numberOfDots={3}
                 animationDelay={150}
                 style={{
@@ -43,6 +46,8 @@ export class Waiting extends Component {
             </View>
           ) : null
         }
+
+
 
 
         <Image style={styles.image}
@@ -86,7 +91,6 @@ export class Waiting extends Component {
           </DialogContent>
         </Dialog>
 
-
       </View >
     )
   }
@@ -95,7 +99,6 @@ export class Waiting extends Component {
   }
 };
 
-export default Waiting;
 
 
 const styles = StyleSheet.create({
@@ -108,15 +111,16 @@ const styles = StyleSheet.create({
   },
   title: {
     color: "black",
-    //fontWeight: "bold",
     fontSize: 20,
-    marginTop: 30,
     fontFamily: 'Montserrat-Bold',
+    textAlign: 'center',
+
   },
   titleContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    alignItems: 'center'
+    marginTop: 30,
+    justifyContent:'center'
   },
   dialogContent: {
     marginTop: 20,
@@ -154,3 +158,10 @@ const styles = StyleSheet.create({
   }
 
 });
+
+const mapStateToProps = (state) => {
+  return {
+    destination: state.destination.destination
+  };
+}
+export default connect(mapStateToProps)(Waiting);

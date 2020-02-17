@@ -2,7 +2,8 @@
 const initialState = {
     destination: {
         latitude: 0,
-        longitude: 0
+        longitude: 0,
+        nom : null
     }
 }
 function getDestination(state = initialState, action) {
@@ -11,35 +12,40 @@ function getDestination(state = initialState, action) {
             return {
                 destination:{
                     latitude:44.808529,
-                    longitude:-0.593583
+                    longitude:-0.593583,
+                    nom : 'Talence'
                 }
             }
         case 'MONTAIGNE':
             return {
                 destination:{
                     latitude:44.795366,
-                    longitude:-0.616307
+                    longitude:-0.616307,
+                    nom : 'Montaigne'
                 }
             }
         case 'CARREIRE':
             return {
                 destination:{
                     latitude:44.825793,
-                    longitude:-0.606012
+                    longitude:-0.606012,
+                    nom : 'Carreire'
                 }
             }
         case 'VICTOIRE':
             return {
                 destination:{
                     latitude:44.831236,
-                    longitude:-0.571001
+                    longitude:-0.571001,
+                    nom: 'Victoire'
                 }
             }
         case 'BASTIDE':
             return {
                 destination:{
                     latitude:44.845049,
-                    longitude:-0.557719
+                    longitude:-0.557719,
+                    nom: 'Bastide'
                 }
             }
         default:

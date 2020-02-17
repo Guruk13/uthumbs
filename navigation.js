@@ -3,24 +3,34 @@ import { createAppContainer } from 'react-navigation';
 import Home from './Home';
 import myMap from './Map';
 import Workplace from './Workplace';
-import Waiting  from './Waiting';
+import Waiting from './Waiting';
 import Swiper from './SwiperPage';
+import Connection from './Connection';
 
 const MyStackNavigator = createStackNavigator({
-    Home: {
-        screen : Home
-      },
-    Map: {
-        screen : myMap
-    },
-    Workplace: {
-      screen : Workplace
-    },
-    Waiting: {
-      screen : Waiting
-    },
-    Swiper: {
-      screen : Swiper
+  Swiper: {
+    screen: Swiper
+  },
+  Home: {
+    screen: Home
+  },
+  Map: {
+    screen: myMap
+  },
+  Workplace: {
+    screen: Workplace
+  },
+  Waiting: {
+    screen: Waiting
+  },
+  Connection: {
+    screen: Connection
+  },
+},
+  {
+    headerMode: 'none',
+    navigationOptions: {
+      headerVisible: false,
     }
   })
 
