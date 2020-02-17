@@ -10,15 +10,24 @@ export default class SwiperPage extends Component {
       <Swiper
         activeDotColor="black"
         style={styles.wrapper}>
+
         <View style={styles.slide1}>
           <Image style={styles.logoStyle}
             source={require('./public/imgs/logoFullWhite.png')} />
           <Image style={styles.image}
-            source={require('./public/imgs/tutoImage1.png')} />
-          <Text style={styles.text}>Tu as besoin d'aide ? Ou alors, tu souhaites dépanner quelqu'un ? Fais ton choix !</Text>
+            source={require('./public/imgs/pieton.png')} />
+          <Text style={styles.text}>Des problèmes de transport ? Un bus manqué ? Des trams bondés ? Tu as besoin d'aide ? {"\n"}{"\n"} Tu peux te faire aider !</Text>
         </View>
 
-        <View style={styles.slide2}>
+        <View style={styles.slide1}>
+          <Image style={styles.logoStyle}
+            source={require('./public/imgs/logoFullWhite.png')} />
+          <Image style={styles.image}
+            source={require('./public/imgs/conducteur.png')} />
+          <Text style={styles.text}>Tu souhaites dépanner quelqu'un qui a des problèmes de transport ? {"\n"}{"\n"} Amène des personnes qui sont à la même fac que toi !</Text>
+        </View>
+
+        <View style={styles.slide1}>
           <Image style={styles.logoStyle}
             source={require('./public/imgs/logoFullWhite.png')} />
           <Image style={styles.image}
@@ -29,23 +38,10 @@ export default class SwiperPage extends Component {
         <View style={styles.slide3}>
           <Image style={styles.logoStyle}
             source={require('./public/imgs/logoFullWhite.png')} />
-          
-          <Text style={styles.text}>Se connecter</Text>
-          <TextInput
-            style={styles.inputStyle}
-            returnKeyType={"next"}
-            // autoFocus={true}
-            placeholder="Email" />
-          <TextInput
-            placeholder="Mot de passe"
-            secureTextEntry={true}
-            style={styles.inputStyle} />
-          <TouchableOpacity>
-            <Text style={styles.textConnection}>Mot de passe oublié ?</Text>
-          </TouchableOpacity>
 
-          <TouchableOpacity style={styles.buttonConnection}>
-            <Text style={styles.textConnection}>Connexion</Text>
+
+          <TouchableOpacity onPress={() => { this.props.navigation.navigate('Connection') }} style={styles.buttonConnection}>
+            <Text style={styles.textConnection}>Démarer</Text>
           </TouchableOpacity>
 
         </View>
@@ -56,21 +52,16 @@ export default class SwiperPage extends Component {
 
 const styles = StyleSheet.create({
   wrapper: {
-
+    flex: 1,
+    flexDirection: "column",
   },
   logoStyle: {
-    width: '70%',
+    marginTop: '5%',
+    width: '80%',
     height: '10%',
   },
   slide1: {
-    //justifyContent: 'center',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#a64253',
-  },
-
-  slide2: {
-    justifyContent: 'center',
+    justifyContent: 'space-around',
     alignItems: 'center',
     backgroundColor: '#a64253',
   },
@@ -88,29 +79,41 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: '4%',
     width: '90%',
+    marginBottom: '40%',
+
   },
 
   image: {
-    width: '70%',
+    width: '80%',
     height: '37%',
     borderRadius: Math.round(Dimensions.get('window').width + Dimensions.get('window').height) / 2,
+    backgroundColor: 'white'
   },
 
   buttonConnection: {
     borderWidth: 2,
     borderColor: 'white',
     padding: '4%',
-
+    borderRadius: 20,
+    marginTop: '10%',
+    width: '35%',
   },
   textConnection: {
     color: 'white',
-    fontSize: 10
+    fontSize: 17,
+    textAlign: 'center'
+
   },
 
   inputStyle: {
     marginBottom: 20,
     borderWidth: 1,
-    borderColor: 'white'
+    borderColor: 'white',
+    padding: '2%',
+    textAlign: 'center',
+    borderRadius: 10,
+    width: '70%',
+    backgroundColor: 'white'
   }
 
 })

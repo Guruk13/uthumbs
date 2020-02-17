@@ -13,7 +13,8 @@ class Workplace extends Component {
         this.state = {
             destination: {
                 latitude: 0,
-                longitude: 0
+                longitude: 0,
+                nom: null
             }
         };
     }
@@ -101,7 +102,8 @@ const styles = StyleSheet.create({
         margin: 5,
         color: 'black',
         fontWeight: 'bold',
-        marginBottom: 30
+        marginBottom: '10%',
+        marginTop: '10%',
     },
     imagesContainer: {
         flex: 1,
