@@ -11,8 +11,11 @@ const { width, height } = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
 const LATITUDE = 37.78825;
 const LONGITUDE = -122.4324;
-const LATITUDE_DELTA = 0.005;
-const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
+const LATITUDE_DELTA_HAUT = 0.015;
+const LATITUDE_DELTA_BAS = 0.007;
+const LONGITUDE_DELTA_HAUT = LATITUDE_DELTA_HAUT * ASPECT_RATIO;
+const LONGITUDE_DELTA_BAS = LATITUDE_DELTA_BAS * ASPECT_RATIO;
+
 const SPACE = 0.01;
 const GOOGLE_MAPS_APIKEY = 'AIzaSyB2sGMhio_-YehtPloM5a2qjFnojLzil2k';
 
@@ -22,6 +25,8 @@ class Map extends Component {
     this.state = {
       latitude: LATITUDE,
       longitude: LONGITUDE,
+      latitudeDelta: LATITUDE_DELTA_HAUT,
+      longitudeDelta: LONGITUDE_DELTA_HAUT,
       coordinate: new AnimatedRegion({
         latitude: LATITUDE,
         longitude: LONGITUDE,
@@ -51,6 +56,14 @@ class Map extends Component {
     this.setState({ fontLoaded: true });
 
     this.watchLocation();
+  }
+
+  checkLatitude = () => {
+    if(!this.state.courseStarted){
+      this.setState({latitudeDelta: LATITUDE_DELTA_BAS, longitudeDelta: LONGITUDE_DELTA_BAS})
+    } else {
+      this.setState({latitudeDelta: LATITUDE_DELTA_HAUT, longitudeDelta: LONGITUDE_DELTA_HAUT})
+    }
   }
 
   watchLocation = () => {
@@ -102,14 +115,14 @@ class Map extends Component {
   focusLoc = () => {
     if(this.state.ready){
       if(this.state.courseStarted){
-    region = {
+     let region = {
       latitude: this.state.latitude,
       longitude: this.state.longitude,
-      latitudeDelta: LATITUDE_DELTA,
-      longitudeDelta: LONGITUDE_DELTA
+      latitudeDelta: this.state.latitudeDelta,
+      longitudeDelta: this.state.longitudeDelta
     };
-
-    this.map.animateToRegion(region, 2000);
+     
+    this.map.animateToRegion(region, 1000);
   }
 }
   }
@@ -128,7 +141,7 @@ class Map extends Component {
           provider={PROVIDER_GOOGLE}
           style={styles.map}
           onMapReady={this.onMapReady}
-          region={{ latitude: this.state.latitude, longitude: this.state.longitude, latitudeDelta: LATITUDE_DELTA, longitudeDelta: LONGITUDE_DELTA }}
+          region={{ latitude: this.state.latitude, longitude: this.state.longitude, latitudeDelta: this.state.latitudeDelta, longitudeDelta: this.state.longitudeDelta }}
           followsUserLocation={true}
           onRegionChangeComplete={this.focusLoc}>
           <MapView.Marker
@@ -155,7 +168,7 @@ class Map extends Component {
         <View style={styles.buttonArea}>
           {
             this.state.fontLoaded ? (
-              <TouchableOpacity style={{ alignItems: 'center' }} onPress={() => { this.setState({ courseStarted: !this.state.courseStarted }) }}>
+              <TouchableOpacity style={{ alignItems: 'center' }} onPress={() => { this.checkLatitude(); this.setState({ courseStarted: !this.state.courseStarted })  }}>
                 <Text style={{ fontSize: 21, fontFamily: 'Montserrat-Bold', paddingTop: '7%', paddingBottom: '7%' }}>{this.state.courseStarted ? 'Terminé' : 'Départ'}</Text>
               </TouchableOpacity>
             ) : null
