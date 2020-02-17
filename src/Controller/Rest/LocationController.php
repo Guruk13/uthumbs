@@ -1,5 +1,5 @@
 <?php
-
+///https://www.thinktocode.com/2018/03/26/symfony-4-rest-api-part-1-fosrestbundle/
 namespace App\Controller\Rest;
 //Business
 use App\Entity\Location;
@@ -108,4 +108,7 @@ class LocationController  extends FOSRestController
         // In case our DELETE was a success we need to return a 204 HTTP NO CONTENT response. The object is deleted.
         return View::create([], Response::HTTP_NO_CONTENT);
     }
+
+
+//====================================================================================================
 }
