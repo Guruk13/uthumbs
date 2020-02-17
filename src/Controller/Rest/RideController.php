@@ -15,6 +15,7 @@ use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 
 
@@ -96,13 +97,15 @@ class RideController  extends FOSRestController
     /**
      * Removes the Ride resource
      * @Rest\Delete("/rides/{rideId}")
+     * @ParamConverter("ride", options={"mapping": {"rideId" : "id"}})
      */
-    public function deleteRide(int $rideId): View
+    public function deleteLocation(Ride $ride): View
     {
         $repository = $this->getDoctrine()->getRepository(Ride::class);
-        $ride = $repository->findById($rideId);
         if ($ride) {
-            $this->$repository->delete($ride);
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->remove($ride);
+            $entityManager->flush();
         }
         // In case our DELETE was a success we need to return a 204 HTTP NO CONTENT response. The object is deleted.
         return View::create([], Response::HTTP_NO_CONTENT);
