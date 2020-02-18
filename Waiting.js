@@ -79,7 +79,7 @@ class Waiting extends Component {
           ) : null
         }
 
-        < Dialog
+        <Dialog
           style={styles.popUp}
           visible={this.state.dialogOpen}
           onTouchOutside={() => {
@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
   titleContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    marginTop: 30,
+    marginTop: '15%',
     justifyContent: 'center'
   },
   dialogContent: {

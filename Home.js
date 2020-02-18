@@ -11,12 +11,11 @@ class Home extends Component {
     this.state = {
       userIsDriver: null,
       dialogOpen: false,
-
     };
   }
 
   componentDidMount() {
-    console.log("add home");
+    //    console.log(this.props.username);
     BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
   }
 
@@ -33,8 +32,10 @@ class Home extends Component {
   render() {
     return (
       <View style={styles.container}>
+
         <Image style={styles.logoStyle}
           source={require('./public/imgs/logoFullWhite.png')} />
+        <Text style={styles.welcomeText}>Bienvenue {this.props.username}  !</Text>
         <View style={styles.buttonsContainer}>
           <View style={styles.buttonContainer}>
             <Text style={styles.titleStyle}>Vous avez un imprévu ? </Text>
@@ -50,7 +51,7 @@ class Home extends Component {
             <Text style={styles.titleStyle}>Vous souhaitez aider ? </Text>
             <TouchableOpacity style={styles.touchableStyle} onPress={() => {
               BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
-              this.props.navigation.navigate('Workplace'); 
+              this.props.navigation.navigate('Workplace');
               this.setUserStatus('DRIVER');
             }}>
               <Text style={styles.buttonStyle}>CONDUCTEUR</Text>
@@ -119,7 +120,7 @@ const styles = StyleSheet.create({
   titleStyle: {
     // marginBottom: 10,
     color: "white",
-    fontSize: 17
+    fontSize: 18
   },
   touchableStyle: {
     borderRadius: 100,
@@ -133,9 +134,8 @@ const styles = StyleSheet.create({
   logoStyle: {
     width: 250,
     height: 60,
-    marginBottom: '8%',
+  //  marginBottom: '1%',
     marginTop: '17%'
-
   },
   buttonContainer: {
     alignItems: 'center',
@@ -147,17 +147,23 @@ const styles = StyleSheet.create({
   },
   dialogContent: {
     marginTop: 20,
-    fontWeight: 'bold',
     fontSize: 17,
     textAlign: 'center',
   },
+  welcomeText: {
+    color: 'white',
+    fontSize: 18,
+    marginBottom:'5%'
+  }
 });
 
 
 
 const mapStateToProps = (state) => {
+  console.log(state.username)
   return {
-    userIsDriver: state.userIsDriver
+    userIsDriver: state.userIsDriver,
+    username: state.username.username
   };
 }
 export default connect(mapStateToProps)(Home);

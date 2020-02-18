@@ -3,11 +3,33 @@ import { View, Text, Button, StyleSheet, TouchableOpacity, Image, TextInput, Dim
 import { Icon } from 'react-native-elements';
 import { connect } from 'react-redux'
 import { Logs } from 'expo';
+import Dialog, { SlideAnimation, DialogContent, DialogFooter, DialogButton, PopupDialog } from 'react-native-popup-dialog';
 
 
 class Connection extends Component {
     constructor(props) {
         super(props);
+        this.state = {
+            username: null,
+            dialogOpen: false,
+        };
+    }
+    setUsername(status) {
+        const action = {
+            type: status,
+            value: this.state.username
+        }
+        this.props.dispatch(action)
+    }
+
+    startOnApp() {
+        if (this.state.username != null) {
+            this.setUsername('setUsername');
+            this.props.navigation.push('Home');
+        }
+        else {
+            this.setState({ dialogOpen: true });
+        }
     }
     render() {
         return (
@@ -15,23 +37,41 @@ class Connection extends Component {
                 <Image style={styles.logoStyle}
                     source={require('./public/imgs/logoFullWhite.png')} />
 
-                <TextInput
-                    style={styles.inputStyle}
-                    returnKeyType={"next"}
-                    // autoFocus={true}
-                    placeholder="Email" />
-                <TextInput
-                    placeholder="Mot de passe"
-                    secureTextEntry={true}
-                    style={styles.inputStyle} />
-                <TouchableOpacity>
-                    <Text style={styles.textConnection}>Mot de passe oublié ?</Text>
-                </TouchableOpacity>
+                <View style={styles.pageContent}>
+                    <TextInput
+                        style={styles.inputStyle}
+                        returnKeyType={"next"}
+                        onChangeText={(username) => this.setState({ username })}
+                        value={this.state.username}
+                        placeholder="Pseudo" />
 
-                <TouchableOpacity onPress={() => { this.props.navigation.navigate('Home') }} style={styles.buttonConnection}>
-                    <Text style={styles.textConnection}>Connexion</Text>
-                </TouchableOpacity>
+                    <TouchableOpacity onPress={() => { this.startOnApp() }} style={styles.buttonConnection}>
+                        <Text style={styles.textConnection}>C'est parti !</Text>
+                    </TouchableOpacity>
+                </View>
 
+                <Dialog
+                    style={styles.popUp}
+                    visible={this.state.dialogOpen}
+                    onTouchOutside={() => {
+                        this.setState({ dialogOpen: false });
+                    }}
+                    footer={
+                        <DialogFooter>
+                            <DialogButton
+                                style={styles.dialogButton}
+                                text="OK"
+                                onPress={() => {
+                                    this.setState({ dialogOpen: false })
+                                }}
+                            />
+                        </DialogFooter>
+                    }
+                >
+                    <DialogContent>
+                        <Text style={styles.dialogContent}>Pseudo invalide ...</Text>
+                    </DialogContent>
+                </Dialog>
             </View>
         )
     }
@@ -39,32 +79,15 @@ class Connection extends Component {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1 ,
+        flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#a64253',
     },
     logoStyle: {
-        marginTop: '5%',
         width: '80%',
         height: '10%',
-    },
-    text: {
-        color: '#fff',
-        fontSize: 20,
-        //fontWeight: 'bold',
-        textAlign: 'center',
-        marginTop: '4%',
-        width: '90%',
-        marginBottom: '40%',
-
-    },
-
-    image: {
-        width: '80%',
-        height: '37%',
-        borderRadius: Math.round(Dimensions.get('window').width + Dimensions.get('window').height) / 2,
-        backgroundColor: 'white'
+        marginBottom: '20%'
     },
 
     buttonConnection: {
@@ -72,33 +95,52 @@ const styles = StyleSheet.create({
         borderColor: 'white',
         padding: '4%',
         borderRadius: 20,
-        marginTop: '10%',
+        marginTop: '6%',
         width: '35%',
     },
     textConnection: {
         color: 'white',
         fontSize: 17,
-        textAlign: 'center'
-
+        textAlign: 'center',
+        fontWeight: 'bold',
     },
 
     inputStyle: {
-        marginBottom: 20,
         borderWidth: 1,
         borderColor: 'white',
         padding: '2%',
         textAlign: 'center',
         borderRadius: 10,
-        width: '70%',
+        width: 200,
         backgroundColor: 'white'
+    },
+    pageContent: {
+        alignItems: 'center',
+        marginBottom: '20%'
+    },
+    dialogContent: {
+        fontSize: 17,
+        textAlign: 'center',
+        marginTop: 30,
+        marginLeft: '15%',
+        marginRight: '15%'
+    },
+    popUp: {
+        backgroundColor: 'red'
+    },
+    dialogButton: {
+        color: 'red',
+
     }
+
 });
 
 
 
 const mapStateToProps = (state) => {
     return {
-
+        username: state.username,
+        
     };
 }
 export default connect(mapStateToProps)(Connection);
