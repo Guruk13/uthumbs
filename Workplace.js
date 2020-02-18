@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Button, StyleSheet, TouchableOpacity, Image, Dimensions } from 'react-native';
+import { View, Text, Button, StyleSheet, TouchableOpacity, Image, Dimensions, BackHandler} from 'react-native';
 import { connect } from 'react-redux'
 
 const dimensions = Dimensions.get('window');
@@ -18,6 +18,22 @@ class Workplace extends Component {
             }
         };
     }
+
+    componentWillMount() {
+        BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
+      }
+    
+      componentWillUnmount() {
+        BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
+      }
+    
+      handleBackPress = () => {
+        this.props.navigation.push('Home');
+        return true;
+      };
+    
+
+
 
     render() {
         return (

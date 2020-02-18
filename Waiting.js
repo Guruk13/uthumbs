@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { View, Text, Button, StyleSheet, TouchableOpacity, Image, ActivityIndicator, AppRegistry } from 'react-native';
+import { View, Text, Button, StyleSheet, TouchableOpacity, Image, ActivityIndicator, AppRegistry, BackHandler, Alert } from 'react-native';
 import AnimatedEllipsis from 'react-native-animated-ellipsis';
 import Dialog, { SlideAnimation, DialogContent, DialogFooter, DialogButton, PopupDialog } from 'react-native-popup-dialog';
 import { connect } from 'react-redux'
+
 
 import * as Font from 'expo-font';
 
@@ -14,9 +15,24 @@ class Waiting extends Component {
     this.state = {
       dialogOpen: false,
       fontLoaded: false
-
     };
   }
+
+  componentWillMount() {
+    console.log('add waiting');
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
+  }
+
+  componentWillUnmount() {
+    console.log("Remove waiting");
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
+  }
+
+  handleBackPress = () => {
+    this.onButtonQuitClick();
+    return true;
+  };
+
   async componentDidMount() {
     await Font.loadAsync({
       'Montserrat-Regular': require('./assets/fonts/Montserrat-Regular.ttf'),
@@ -26,9 +42,12 @@ class Waiting extends Component {
     this.setState({ fontLoaded: true });
   }
 
+
+
   render() {
     return (
       <View style={styles.container}>
+
         {
           this.state.fontLoaded ? (
             <View style={styles.titleContainer}>
@@ -42,13 +61,9 @@ class Waiting extends Component {
                   fontWeight: 'bold'
                 }}
               />
-
             </View>
           ) : null
         }
-
-
-
 
         <Image style={styles.image}
           source={require('./public/imgs/waitingImage.png')} />
@@ -80,7 +95,7 @@ class Waiting extends Component {
                 text="OK"
                 onPress={() => {
                   this.setState({ dialogOpen: false })
-                  this.props.navigation.navigate('Home')
+                  this.props.navigation.push('Home');
                 }}
               />
             </DialogFooter>
@@ -120,7 +135,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     marginTop: 30,
-    justifyContent:'center'
+    justifyContent: 'center'
   },
   dialogContent: {
     marginTop: 20,

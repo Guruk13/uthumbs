@@ -1,36 +1,91 @@
 import React, { Component } from 'react';
-import { View, Text, Button, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, Text, Button, StyleSheet, TouchableOpacity, Image, BackHandler, BackAndroid } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { connect } from 'react-redux'
-import { Logs } from 'expo';
+import Dialog, { DialogContent, DialogFooter, DialogButton } from 'react-native-popup-dialog';
 
 
 class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      userIsDriver: null
+      userIsDriver: null,
+      dialogOpen: false,
+
     };
   }
+
+  componentDidMount() {
+    console.log("add home");
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
+  }
+
+  handleBackPress = () => {
+    this.onQuitPage();
+    return true;
+  };
+
+  onQuitPage() {
+    this.setState({ dialogOpen: true });
+  }
+
+
   render() {
     return (
       <View style={styles.container}>
         <Image style={styles.logoStyle}
           source={require('./public/imgs/logoFullWhite.png')} />
-        <View style={styles.imagesContainer}>
-          <Text style={styles.titleStyle}>Vous avez un imprévu ? </Text>
-          <TouchableOpacity style={styles.touchableStyle} onPress={() => { this.props.navigation.navigate('Workplace'); this.setUserStatus("PEDESTRIAN") }}>
-            <Image style={styles.imageStyle}
-              source={require('./public/imgs/pieton.png')} />
-          </TouchableOpacity>
-          <Text style={styles.titleStyle}>Vous souhaitez aider ? </Text>
-          <TouchableOpacity style={styles.touchableStyle} onPress={() => { this.props.navigation.navigate('Workplace'); this.setUserStatus('DRIVER') }}>
-            <Image style={styles.imageStyle}
-              source={require('./public/imgs/conducteur.png')} />
-          </TouchableOpacity>
-
-          
+        <View style={styles.buttonsContainer}>
+          <View style={styles.buttonContainer}>
+            <Text style={styles.titleStyle}>Vous avez un imprévu ? </Text>
+            <TouchableOpacity style={styles.touchableStyle} onPress={() => {
+              BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
+              this.props.navigation.navigate('Workplace');
+              this.setUserStatus("PEDESTRIAN");
+            }}>
+              <Text style={styles.buttonStyle}>PIETON</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.buttonContainer}>
+            <Text style={styles.titleStyle}>Vous souhaitez aider ? </Text>
+            <TouchableOpacity style={styles.touchableStyle} onPress={() => {
+              BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
+              this.props.navigation.navigate('Workplace'); 
+              this.setUserStatus('DRIVER');
+            }}>
+              <Text style={styles.buttonStyle}>CONDUCTEUR</Text>
+            </TouchableOpacity>
+          </View>
         </View>
+        <Image style={styles.bottomImage}
+          source={require('./public/imgs/homeImage.png')} />
+
+        < Dialog
+          style={styles.popUp}
+          visible={this.state.dialogOpen}
+          onTouchOutside={() => {
+            this.setState({ dialogOpen: false });
+          }}
+          footer={
+            <DialogFooter>
+              <DialogButton
+                text="Annuler"
+                onPress={() => { this.setState({ dialogOpen: false }) }}
+              />
+              <DialogButton
+                text="OK"
+                onPress={() => {
+                  this.setState({ dialogOpen: false })
+                  BackHandler.exitApp()
+                }}
+              />
+            </DialogFooter>
+          }
+        >
+          <DialogContent>
+            <Text style={styles.dialogContent}>Quitter l'application ?</Text>
+          </DialogContent>
+        </Dialog>
       </View>
     )
   }
@@ -48,14 +103,18 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#a64253',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-around',
   },
-  imageStyle: {
+  buttonStyle: {
     backgroundColor: 'white',
     borderRadius: 100,
-    padding: 10,
-    height: 180,
-    width: 180
+    padding: 15,
+    color: "#a64253",
+    textAlign: 'center',
+    fontWeight: "bold",
+    fontSize: 16,
+    marginTop: '5%',
+    width: 250
   },
   titleStyle: {
     // marginBottom: 10,
@@ -63,20 +122,35 @@ const styles = StyleSheet.create({
     fontSize: 17
   },
   touchableStyle: {
-    //backgroundColor: 'white',
-    padding: 28,
-    borderRadius: 100
+    borderRadius: 100,
   },
-  imagesContainer: {
+  buttonsContainer: {
     flexDirection: 'column',
-    justifyContent: 'space-around',
+    flex: 1,
     alignItems: 'center',
+    marginTop: '20%',
   },
   logoStyle: {
     width: 250,
     height: 60,
-    marginBottom: 40
-  }
+    marginBottom: '8%',
+    marginTop: '17%'
+
+  },
+  buttonContainer: {
+    alignItems: 'center',
+    marginBottom: '15%'
+  },
+  bottomImage: {
+    width: '100%',
+    height: '30%',
+  },
+  dialogContent: {
+    marginTop: 20,
+    fontWeight: 'bold',
+    fontSize: 17,
+    textAlign: 'center',
+  },
 });
 
 

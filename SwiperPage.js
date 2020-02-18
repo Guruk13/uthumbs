@@ -5,6 +5,9 @@ import React, { Component } from 'react';
 
 
 export default class SwiperPage extends Component {
+  constructor(props) {
+    super(props);
+}
   render() {
     return (
       <Swiper
@@ -16,7 +19,7 @@ export default class SwiperPage extends Component {
             source={require('./public/imgs/logoFullWhite.png')} />
           <Image style={styles.image}
             source={require('./public/imgs/pieton.png')} />
-          <Text style={styles.text}>Des problèmes de transport ? Un bus manqué ? Des trams bondés ? Tu as besoin d'aide ? {"\n"}{"\n"} Tu peux te faire aider !</Text>
+          <Text style={styles.text}>Des problèmes de transport ? Un bus manqué ? Des trams bondés ? Tu as besoin d'aide ? {"\n"}{"\n"} Tu peux te faire aider instantanément!</Text>
         </View>
 
         <View style={styles.slide1}>
