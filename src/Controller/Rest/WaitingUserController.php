@@ -22,7 +22,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 class WaitingUserController extends FOSRestController
 {
     /**
-     * Creates an Location resource
+     * Creates an WaitingUser resource
      * @Rest\Post("/waiting_user")
      * @param Request $request
      * @return View
@@ -45,11 +45,11 @@ class WaitingUserController extends FOSRestController
 
         // actually executes the queries (i.e. the INSERT query)
         $entityManager->flush();
-        return View::create($location, Response::HTTP_CREATED);
+        return View::create($waitingUser, Response::HTTP_CREATED);
     }
 
     /**
-     * Retrieves a collection of Location resource
+     * Retrieves a collection of WaitingUser resource
      * @Rest\Get("/waiting_users")
      */
     public function getWaitingUsers(Request $request): View
@@ -60,12 +60,12 @@ class WaitingUserController extends FOSRestController
         $repository = $this->getDoctrine()->getRepository(WaitingUser::class);
         $waitingUsers =  $repository->findAll();
 
-        // In case our GET was a success we need to return a 200 HTTP OK response with the collection of location object
+        // In case our GET was a success we need to return a 200 HTTP OK response with the collection of waitingUser object
         return View::create($waitingUsers, Response::HTTP_OK);
     }
 
     /**
-     * Retrieves an Location resource
+     * Retrieves an WaitingUser resource
      * @Rest\Get("/waiting_users/{userId}")
      */
     public function getWaitingUser(int $userId): View
@@ -77,7 +77,7 @@ class WaitingUserController extends FOSRestController
     }
 
     /**
-     * Replaces Location resource
+     * Replaces WaitingUser resource
      * @Rest\Put("/wating_user/{userId}")
      */
     public function putWaitingUser(int $userId, Request $request): View
@@ -101,11 +101,11 @@ class WaitingUserController extends FOSRestController
     }
 
     /**
-     * Removes the Location resource
+     * Removes the WaitingUser resource
      * @Rest\Delete("/waiting_user/{userId}")
      * @ParamConverter("waitingUser", options={"mapping": {"userId" : "id"}})
      */
-    public function deleteLocation(WaitingUser $waitingUser): View
+    public function deleteWaitingUser(WaitingUser $waitingUser): View
     {
         $repository = $this->getDoctrine()->getRepository(WaitingUser::class);
         if ($waitingUser) {
