@@ -51,9 +51,11 @@ class LocationController  extends FOSRestController
      * Retrieves a collection of Location resource
      * @Rest\Get("/locations")
      */
-    public function getLocations(): View
+    public function getLocations(Request $request): View
     {
-
+        $mediaType = $request->attributes->get('media_type');
+        //encode/decode 
+        dump($mediaType);
         $repository = $this->getDoctrine()->getRepository(Location::class);
         $locations =  $repository->findAll();
 

@@ -12,5 +12,5 @@ fos_rest:
 #            App\Exception\MyException: Forbidden area.
     format_listener:
         rules:
-            - { path: ^/api, prefer_extension: false, fallback_format: json html, priorities: [ '*/*' ] }
+            - { path: ^/api, prefer_extension: true, fallback_format: html , priorities: [ 'json' ] }
             - { path: '^/', priorities: [ 'html', '*/*'], fallback_format: ~, prefer_extension: true }
