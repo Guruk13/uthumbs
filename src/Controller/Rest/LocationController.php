@@ -114,5 +114,4 @@ class LocationController  extends FOSRestController
         // In case our DELETE was a success we need to return a 204 HTTP NO CONTENT response. The object is deleted.
         return View::create([], Response::HTTP_NO_CONTENT);
     }
-
 }
