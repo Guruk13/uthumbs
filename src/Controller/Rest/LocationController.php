@@ -27,10 +27,8 @@ class LocationController  extends FOSRestController
      */
     public function postLocation(Request $request): View
     {
-<<<<<<< HEAD
-=======
         $mediaType = $request->attributes->get('media_type');
->>>>>>> 03aa7961fe490d4821b43ee2991525f904d68902
+
         //encode/decode 
         dump($mediaType);
         $encoders = [new XmlEncoder(), new JsonEncoder()];
