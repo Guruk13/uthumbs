@@ -57,7 +57,7 @@ class Waiting extends Component {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              name: 'Matéo',
+              name: this.props.username,
               latitude: this.state.latitude,
               longitude: this.state.longitude,
               destination: this.props.destination.nom
@@ -199,7 +199,8 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => {
   return {
-    destination: state.destination.destination
+    destination: state.destination.destination,
+    username: state.username.username
   };
 }
 export default connect(mapStateToProps)(Waiting);
