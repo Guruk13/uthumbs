@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, Button, StyleSheet, TouchableOpacity, Image, ActivityIndicator, AppRegistry, BackHandler, Alert } from 'react-native';
 import AnimatedEllipsis from 'react-native-animated-ellipsis';
 import Dialog, { SlideAnimation, DialogContent, DialogFooter, DialogButton, PopupDialog } from 'react-native-popup-dialog';
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
 
 
 import * as Font from 'expo-font';
@@ -14,12 +14,13 @@ class Waiting extends Component {
     super(props);
     this.state = {
       dialogOpen: false,
-      fontLoaded: false
+      fontLoaded: false,
+      latitude: 0,
+      longitude: 0,
     };
   }
 
-  componentWillMount() {
-    console.log('add waiting');
+  UNSAFE_componentWillMount() {
     BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
   }
 
@@ -40,9 +41,35 @@ class Waiting extends Component {
     });
 
     this.setState({ fontLoaded: true });
+
+    this.findCoordinates();
   }
 
+  findCoordinates = () => {
+    navigator.geolocation.getCurrentPosition(
+      position => {
 
+        this.setState({ latitude: position.coords.latitude, longitude: position.coords.longitude }, function () {
+          fetch('http://185.212.225.143/api/waiting_user', {
+            method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              name: 'Matéo',
+              latitude: this.state.latitude,
+              longitude: this.state.longitude,
+              destination: this.props.destination.nom
+            }),
+          });
+          console.log("data sent")
+        });
+      },
+      error => Alert.alert(error.message),
+      { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+    );
+  };
 
   render() {
     return (
