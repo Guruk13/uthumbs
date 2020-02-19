@@ -36,6 +36,21 @@ class WaitingUser
      */
     private $destination;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $acceptWalker;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $acceptDriver;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $driverName;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -85,6 +100,42 @@ class WaitingUser
     public function setDestination(string $destination): self
     {
         $this->destination = $destination;
+
+        return $this;
+    }
+
+    public function getAcceptWalker(): ?bool
+    {
+        return $this->acceptWalker;
+    }
+
+    public function setAcceptWalker(bool $acceptWalker): self
+    {
+        $this->acceptWalker = $acceptWalker;
+
+        return $this;
+    }
+
+    public function getAcceptDriver(): ?bool
+    {
+        return $this->acceptDriver;
+    }
+
+    public function setAcceptDriver(bool $acceptDriver): self
+    {
+        $this->acceptDriver = $acceptDriver;
+
+        return $this;
+    }
+
+    public function getDriverName(): ?string
+    {
+        return $this->driverName;
+    }
+
+    public function setDriverName(string $driverName): self
+    {
+        $this->driverName = $driverName;
 
         return $this;
     }
