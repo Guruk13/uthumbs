@@ -81,12 +81,13 @@ class WaitingUserController extends FOSRestController
 
     /**
      * Replaces WaitingUser resource
-     * @Rest\Put("/wating_user/{userId}")
+     * @Rest\Put("/waiting_user/edit/{userId}")
      */
     public function putWaitingUser(int $userId, Request $request): View
     {
         $repository = $this->getDoctrine()->getRepository(WaitingUser::class);
         $waitingUser = $repository->findById($userId);
+        
         if ($waitingUser) {
             //encode/decode 
             $encoders = [new XmlEncoder(), new JsonEncoder()];
@@ -94,7 +95,7 @@ class WaitingUserController extends FOSRestController
             $serializer = new Serializer($normalizers, $encoders);
             $jsonContent = $request->getContent();
             $waitingUser = $serializer->deserialize($jsonContent, WaitingUser::class, 'json');
- 
+            $waitingUser->setId($userId);
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($waitingUser);
             $entityManager->flush();
