@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import MapView, { PROVIDER_GOOGLE, AnimatedRegion, Marker } from 'react-native-maps';
-import { AppRegistry, View, StyleSheet, Dimensions, TouchableOpacity, Text } from 'react-native';
+import { AppRegistry, View, StyleSheet, Dimensions, TouchableOpacity, Text, BackHandler } from 'react-native';
 import MapViewDirections from 'react-native-maps-directions';
 import { connect } from 'react-redux'
 import PubNubReact from "pubnub-react";
 import * as Font from 'expo-font';
 import * as Location from 'expo-location';
+import Dialog, { SlideAnimation, DialogContent, DialogFooter, DialogButton, PopupDialog } from 'react-native-popup-dialog';
 
 const { width, height } = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
@@ -37,8 +38,9 @@ class Map extends Component {
       fontLoaded: false,
       courseStarted: false,
       ready: false,
-      locations: null,
-      locationsReady: false
+      intervalId: null,
+      pedestrians: null,
+      dialogOpen: false,
     };
 
     this.pubnub = new PubNubReact({
@@ -55,14 +57,13 @@ class Map extends Component {
       'Montserrat-Regular': require('./assets/fonts/Montserrat-Regular.ttf'),
       'Montserrat-Bold': require('./assets/fonts/Montserrat-Bold.ttf'),
     });
-    await this.getLocations();
-    this.setState({ locationsReady: true });
     this.setState({ fontLoaded: true });
 
-    console.log(this.state.locations);
-
-
     this.watchLocation();
+  }
+
+  UNSAFE_componentWillMount() {
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
   }
 
   checkLatitude = () => {
@@ -87,7 +88,6 @@ class Map extends Component {
         if (this.marker) {
           coordinate.timing(newCoordinate).start();
         }
-        console.log(position.latitude);
         this.setState({
           latitude,
           longitude,
@@ -118,7 +118,13 @@ class Map extends Component {
 
   UNSAFE_componentWillUnmount() {
     navigator.geolocation.clearWatch(this.watchID);
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
   }
+
+  handleBackPress = () => {
+    this.onButtonQuitClick();
+    return true;
+  };
 
   focusLoc = () => {
     if (this.state.ready) {
@@ -135,13 +141,15 @@ class Map extends Component {
     }
   }
 
-  getLocations() {
-    return fetch('http://185.212.225.143/api/locations')
+  searchingPedestrians() {
+    return fetch('http://185.212.225.143/api/waiting_users/destination/' + this.props.destination.nom)
       .then(response => response.json())
       .then(responseJson => {
-        this.setState({
-          locations: responseJson,
-        });
+        if (responseJson.length) {
+          this.setState({
+            pedestrians: responseJson
+          });
+        }
       })
       .catch(error => {
         console.error(error);
@@ -172,18 +180,6 @@ class Map extends Component {
             title={"title"}
             description={"description"}
           />
-          {
-            this.state.locationsReady ? (
-              <MapView.Marker
-                coordinate={{
-                  latitude: this.state.locations[0].latitude,
-                  longitude: this.state.locations[0].longitude
-                }}
-                title={"title"}
-                description={"description"}
-              />
-            ) : null
-          }
           <Marker.Animated
             ref={marker => {
               this.marker = marker;
@@ -201,14 +197,78 @@ class Map extends Component {
         <View style={styles.buttonArea}>
           {
             this.state.fontLoaded ? (
-              <TouchableOpacity style={{ alignItems: 'center' }} onPress={() => { this.checkLatitude(); this.setState({ courseStarted: !this.state.courseStarted }) }}>
+              <TouchableOpacity style={{ alignItems: 'center' }} onPress={() => { this.checkLatitude(); this.setState({ courseStarted: !this.state.courseStarted }); { this.state.courseStarted ? clearInterval(this.state.intervalId) : this.setState({ intervalId: setInterval(this.searchingPedestrians.bind(this), 5000) }) } }}>
                 <Text style={{ fontSize: 21, fontFamily: 'Montserrat-Bold', paddingTop: '7%', paddingBottom: '7%' }}>{this.state.courseStarted ? 'Terminé' : 'Départ'}</Text>
               </TouchableOpacity>
             ) : null
           }
         </View>
+        <Dialog
+          style={styles.popUp}
+          visible={this.state.dialogOpen}
+          onTouchOutside={() => {
+            this.setState({ dialogOpen: false });
+          }}
+          footer={
+            <DialogFooter>
+              <DialogButton
+                text="Annuler"
+                onPress={() => { this.setState({ dialogOpen: false }) }}
+              />
+              <DialogButton
+                text="OK"
+                onPress={() => {
+                  this.setState({ dialogOpen: false });
+                  console.log(this.state.intervalId);
+                  clearInterval(this.state.intervalId);
+                  this.props.navigation.push('Home');
+                }}
+              />
+            </DialogFooter>
+          }
+        >
+          <DialogContent>
+            <Text style={styles.dialogContent}>Voulez-vous vraiment quitter la map ?</Text>
+          </DialogContent>
+        </Dialog>
+        <Dialog
+          style={styles.popUp}
+          visible={this.state.pedestrians != null}
+          onTouchOutside={() => {
+            this.setState({ pedestrians: null });
+          }}
+          footer={
+            <DialogFooter>
+              <DialogButton
+                text="Refuser"
+                onPress={() => { this.setState({ pedestrians: null }) }}
+              />
+              <DialogButton
+                text="Accepter"
+                onPress={() => {
+                  this.setState({ dialogOpen: false });
+                  console.log(this.state.intervalId);
+                  clearInterval(this.state.intervalId);
+                  this.props.navigation.push('Home');
+                }}
+              />
+            </DialogFooter>
+          }
+        >
+          <DialogContent>
+            {
+              this.state.pedestrians != null ? (
+              <Text style={styles.dialogContent}>{this.state.pedestrians[0].name} se trouve dans les environs, acceptes-tu de le dépanner ?</Text>
+              ): null 
+            }
+          </DialogContent>
+        </Dialog>
       </View>
     );
+  }
+
+  onButtonQuitClick() {
+    this.setState({ dialogOpen: true });
   }
 }
 
@@ -221,6 +281,16 @@ const styles = StyleSheet.create({
   },
   map: {
     ...StyleSheet.absoluteFillObject,
+  },
+  dialogContent: {
+    marginTop: 20,
+    fontWeight: 'bold',
+    fontSize: 17,
+    textAlign: 'center',
+  },
+  popUp: {
+    width: 150,
+    height: 400,
   },
   buttonArea: {
     flex: 1,
