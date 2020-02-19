@@ -20,7 +20,6 @@ export default class firstLaunch extends React.Component {
         }) 
     }
     render() {
-
         if (this.state.firstLaunch === null) {
             return null; 
         } else if (this.state.firstLaunch == 'true') {

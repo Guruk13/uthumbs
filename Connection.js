@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Button, StyleSheet, TouchableOpacity, Image, TextInput, Dimensions } from 'react-native';
+import { View, Text, Button, StyleSheet, TouchableOpacity, Image, TextInput, Dimensions, BackHandler } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { connect } from 'react-redux'
 import { Logs } from 'expo';
@@ -12,6 +12,7 @@ class Connection extends Component {
         this.state = {
             username: null,
             dialogOpen: false,
+            dialogLeaveApp: false
         };
     }
     setUsername(status) {
@@ -22,14 +23,36 @@ class Connection extends Component {
         this.props.dispatch(action)
     }
 
+    componentDidMount() {
+        BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
+    }
+
+    handleBackPress = () => {
+        this.onQuitPage();
+        return true;
+    };
+
+    onQuitPage() {
+        this.setState({ dialogLeaveApp: true });
+    }
+
+
     startOnApp() {
         if (this.state.username != null) {
-            this.setUsername('setUsername');
-            this.props.navigation.push('Home');
+            this.state.username = this.state.username.trim();
+            if (this.state.username.length > 0) {
+                console.log(this.state.username.trim().length);
+                this.setUsername('setUsername');
+                this.props.navigation.push('Home');
+            }
+            else {
+                this.setState({ dialogOpen: true });
+            }
         }
         else {
             this.setState({ dialogOpen: true });
         }
+
     }
     render() {
         return (
@@ -70,6 +93,33 @@ class Connection extends Component {
                 >
                     <DialogContent>
                         <Text style={styles.dialogContent}>Pseudo invalide ...</Text>
+                    </DialogContent>
+                </Dialog>
+
+                < Dialog
+                    style={styles.popUp}
+                    visible={this.state.dialogLeaveApp}
+                    onTouchOutside={() => {
+                        this.setState({ dialogLeaveApp: false });
+                    }}
+                    footer={
+                        <DialogFooter>
+                            <DialogButton
+                                text="Annuler"
+                                onPress={() => { this.setState({ dialogLeaveApp: false }) }}
+                            />
+                            <DialogButton
+                                text="OK"
+                                onPress={() => {
+                                    this.setState({ dialogLeaveApp: false })
+                                    BackHandler.exitApp()
+                                }}
+                            />
+                        </DialogFooter>
+                    }
+                >
+                    <DialogContent>
+                        <Text style={styles.dialogContent}>Quitter l'application ?</Text>
                     </DialogContent>
                 </Dialog>
             </View>
@@ -140,7 +190,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => {
     return {
         username: state.username,
-        
+
     };
 }
 export default connect(mapStateToProps)(Connection);

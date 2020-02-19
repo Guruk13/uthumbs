@@ -42,8 +42,6 @@ class Waiting extends Component {
     this.setState({ fontLoaded: true });
   }
 
-
-
   render() {
     return (
       <View style={styles.container}>
@@ -114,8 +112,6 @@ class Waiting extends Component {
   }
 };
 
-
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -153,7 +149,6 @@ const styles = StyleSheet.create({
     fontSize: 19,
     padding: '5%',
     color: 'white'
-
   },
   touchableCancelButton: {
     borderRadius: 10,
@@ -171,7 +166,6 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '40%',
   }
-
 });
 
 const mapStateToProps = (state) => {

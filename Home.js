@@ -15,7 +15,6 @@ class Home extends Component {
   }
 
   componentDidMount() {
-    //    console.log(this.props.username);
     BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
   }
 
@@ -44,7 +43,7 @@ class Home extends Component {
               this.props.navigation.navigate('Workplace');
               this.setUserStatus("PEDESTRIAN");
             }}>
-              <Text style={styles.buttonStyle}>PIETON</Text>
+              <Text style={styles.buttonStyle}>JE SUIS PIETON</Text>
             </TouchableOpacity>
           </View>
           <View style={styles.buttonContainer}>
@@ -54,7 +53,7 @@ class Home extends Component {
               this.props.navigation.navigate('Workplace');
               this.setUserStatus('DRIVER');
             }}>
-              <Text style={styles.buttonStyle}>CONDUCTEUR</Text>
+              <Text style={styles.buttonStyle}>JE SUIS CONDUCTEUR</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -158,9 +157,7 @@ const styles = StyleSheet.create({
 });
 
 
-
 const mapStateToProps = (state) => {
-  console.log(state.username)
   return {
     userIsDriver: state.userIsDriver,
     username: state.username.username

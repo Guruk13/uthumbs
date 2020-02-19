@@ -42,6 +42,13 @@ class Workplace extends Component {
                     <Text style={styles.title}>Je veux aller au campus ...</Text>
                 </View>
 
+                <View style={styles.touchableSyle}>
+                        <TouchableOpacity onPress={() => { this.redirect(); this.setDestination('GRADIGNAN') }}>
+                            <Image style={styles.image}
+                                source={require('./public/imgs/gradignan.png')} />
+                        </TouchableOpacity>
+                    </View>
+
                 <View style={styles.imagesContainer}>
                     <View style={styles.touchableSyle}>
                         <TouchableOpacity onPress={() => { this.redirect(); this.setDestination('TALENCE') }}>
@@ -77,6 +84,7 @@ class Workplace extends Component {
                                 source={require('./public/imgs/bastide.png')} />
                         </TouchableOpacity>
                     </View>
+
                 </View>
             </View>
         )
@@ -118,7 +126,7 @@ const styles = StyleSheet.create({
         margin: 5,
         color: 'black',
         fontWeight: 'bold',
-        marginBottom: '10%',
+        marginBottom: '6%',
         marginTop: '10%',
     },
     imagesContainer: {
