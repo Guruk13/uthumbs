@@ -135,7 +135,7 @@ class WaitingUserController extends FOSRestController
 
     /**
      * Retrieves a collection of  WaitingUser ; The closest from  the users relative a given geopos
-     * @Rest\Get("/waiting_users/destination/zawarudo")
+     * @Rest\Get("/waiting_users/destinationzawarudo")
      */
     public function getClosestWaitingUsers( Request $request): View
     {   
