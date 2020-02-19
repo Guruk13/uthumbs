@@ -19,6 +19,23 @@ class WaitingUserRepository extends ServiceEntityRepository
         parent::__construct($registry, WaitingUser::class);
     }
 
+
+    /**
+     * @return WaitingUser[] Returns an array of WaitingUser objects
+     */
+    public function findByName($name)
+    {
+        return $this->createQueryBuilder('w')
+            ->andWhere('w.name = :name')
+            ->setParameter('name', $name)
+            ->orderBy('w.id', 'ASC')
+            ->setMaxResults(100000)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+    
+
     // /**
     //  * @return WaitingUser[] Returns an array of WaitingUser objects
     //  */

@@ -116,4 +116,26 @@ class WaitingUserController extends FOSRestController
         // In case our DELETE was a success we need to return a 204 HTTP NO CONTENT response. The object is deleted.
         return View::create([], Response::HTTP_NO_CONTENT);
     }
+
+    //@ParamConverter("waitingUser", options={"mapping": {"userName" : "name"}})
+    /**
+     * Removes the WaitingUser resource
+     * @Rest\Delete("/waiting_user/name/{userName}")
+     * 
+     */
+    public function deleteWaitingUserByName(string $userName): View
+    {
+        $repository = $this->getDoctrine()->getRepository(WaitingUser::class);
+        $waitingUser = $repository->findByName($userName);
+        if ($waitingUser) {
+            foreach ($waitingUser as $user) {
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->remove($user);
+                $entityManager->flush();
+            }
+            
+        }
+        // In case our DELETE was a success we need to return a 204 HTTP NO CONTENT response. The object is deleted.
+        return View::create([], Response::HTTP_NO_CONTENT);
+    }
 }
