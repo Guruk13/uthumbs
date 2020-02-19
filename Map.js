@@ -33,9 +33,12 @@ class Map extends Component {
         latitudeDelta: 0,
         longitudeDelta: 0
       }),
+      markers: [],
       fontLoaded: false,
       courseStarted: false,
-      ready : false
+      ready: false,
+      locations: null,
+      locationsReady: false
     };
 
     this.pubnub = new PubNubReact({
@@ -46,23 +49,27 @@ class Map extends Component {
   }
 
   async componentDidMount() {
-    Location.requestPermissionsAsync();
+    await Location.requestPermissionsAsync();
 
     await Font.loadAsync({
       'Montserrat-Regular': require('./assets/fonts/Montserrat-Regular.ttf'),
       'Montserrat-Bold': require('./assets/fonts/Montserrat-Bold.ttf'),
     });
-
+    await this.getLocations();
+    this.setState({ locationsReady: true });
     this.setState({ fontLoaded: true });
+
+    console.log(this.state.locations);
+
 
     this.watchLocation();
   }
 
   checkLatitude = () => {
-    if(!this.state.courseStarted){
-      this.setState({latitudeDelta: LATITUDE_DELTA_BAS, longitudeDelta: LONGITUDE_DELTA_BAS})
+    if (!this.state.courseStarted) {
+      this.setState({ latitudeDelta: LATITUDE_DELTA_BAS, longitudeDelta: LONGITUDE_DELTA_BAS })
     } else {
-      this.setState({latitudeDelta: LATITUDE_DELTA_HAUT, longitudeDelta: LONGITUDE_DELTA_HAUT})
+      this.setState({ latitudeDelta: LATITUDE_DELTA_HAUT, longitudeDelta: LONGITUDE_DELTA_HAUT })
     }
   }
 
@@ -80,11 +87,12 @@ class Map extends Component {
         if (this.marker) {
           coordinate.timing(newCoordinate).start();
         }
-
+        console.log(position.latitude);
         this.setState({
           latitude,
           longitude,
         });
+
       },
       error => console.log(error),
       {
@@ -108,28 +116,41 @@ class Map extends Component {
     }
   }
 
-  componentWillUnmount() {
+  UNSAFE_componentWillUnmount() {
     navigator.geolocation.clearWatch(this.watchID);
   }
 
   focusLoc = () => {
-    if(this.state.ready){
-      if(this.state.courseStarted){
-     let region = {
-      latitude: this.state.latitude,
-      longitude: this.state.longitude,
-      latitudeDelta: this.state.latitudeDelta,
-      longitudeDelta: this.state.longitudeDelta
-    };
-     
-    this.map.animateToRegion(region, 1000);
+    if (this.state.ready) {
+      if (this.state.courseStarted) {
+        let region = {
+          latitude: this.state.latitude,
+          longitude: this.state.longitude,
+          latitudeDelta: this.state.latitudeDelta,
+          longitudeDelta: this.state.longitudeDelta
+        };
+
+        this.map.animateToRegion(region, 1000);
+      }
+    }
   }
-}
+
+  getLocations() {
+    return fetch('http://185.212.225.143/api/locations')
+      .then(response => response.json())
+      .then(responseJson => {
+        this.setState({
+          locations: responseJson,
+        });
+      })
+      .catch(error => {
+        console.error(error);
+      });
   }
 
   onMapReady = (e) => {
-    if(!this.state.ready) {
-      this.setState({ready: true});
+    if (!this.state.ready) {
+      this.setState({ ready: true });
     }
   }
 
@@ -151,6 +172,18 @@ class Map extends Component {
             title={"title"}
             description={"description"}
           />
+          {
+            this.state.locationsReady ? (
+              <MapView.Marker
+                coordinate={{
+                  latitude: this.state.locations[0].latitude,
+                  longitude: this.state.locations[0].longitude
+                }}
+                title={"title"}
+                description={"description"}
+              />
+            ) : null
+          }
           <Marker.Animated
             ref={marker => {
               this.marker = marker;
@@ -168,7 +201,7 @@ class Map extends Component {
         <View style={styles.buttonArea}>
           {
             this.state.fontLoaded ? (
-              <TouchableOpacity style={{ alignItems: 'center' }} onPress={() => { this.checkLatitude(); this.setState({ courseStarted: !this.state.courseStarted })  }}>
+              <TouchableOpacity style={{ alignItems: 'center' }} onPress={() => { this.checkLatitude(); this.setState({ courseStarted: !this.state.courseStarted }) }}>
                 <Text style={{ fontSize: 21, fontFamily: 'Montserrat-Bold', paddingTop: '7%', paddingBottom: '7%' }}>{this.state.courseStarted ? 'Terminé' : 'Départ'}</Text>
               </TouchableOpacity>
             ) : null
