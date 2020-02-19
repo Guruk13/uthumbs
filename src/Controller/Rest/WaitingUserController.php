@@ -40,7 +40,7 @@ class WaitingUserController extends FOSRestController
         $waitingUser = new WaitingUser();
         $jsonContent =  $request->getContent();
         $waitingUser = $serializer->deserialize($jsonContent, WaitingUser::class, 'json');
-        $waitingUser->setAcceptWalker(false);  
+        $waitingUser->setAcceptWalker(false);
         $waitingUser->setAcceptDriver(false);
         $waitingUser->setDriverName("");
         $entityManager = $this->getDoctrine()->getManager();
@@ -96,6 +96,7 @@ class WaitingUserController extends FOSRestController
             $jsonContent = $request->getContent();
             $waitingUser = $serializer->deserialize($jsonContent, WaitingUser::class, 'json');
             $waitingUser->setId($userId);
+
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($waitingUser);
             $entityManager->flush();
@@ -137,9 +138,55 @@ class WaitingUserController extends FOSRestController
                 $entityManager->remove($user);
                 $entityManager->flush();
             }
-            
         }
         // In case our DELETE was a success we need to return a 204 HTTP NO CONTENT response. The object is deleted.
         return View::create([], Response::HTTP_NO_CONTENT);
     }
+
+    /**
+     * Retrieves a collection of  WaitingUser with same destination resource
+     * @Rest\Get("/waiting_users/destination/{destination}")
+     */
+    public function getSameWaitingUsers(string $destination, Request $request): View
+    {
+        //$destination= strtolower(trim($destination));
+        $repository = $this->getDoctrine()->getRepository(WaitingUser::class);
+        $waitingUsers =  $repository->findBy(['destination' => $destination]);
+
+        // In case our GET was a success we need to return a 200 HTTP OK response with the collection of waitingUser object
+        return View::create($waitingUsers, Response::HTTP_OK);
+    }
+
+
+    /**
+     * Retrieves a collection of  WaitingUser ; The closest from  the users relative a given geopos
+     * @Rest\Get("/waiting_users/destination/zawarudo")
+     */
+    public function getClosestWaitingUsers(Request $request): View
+    {
+        //$destination= strtolower(trim($destination));
+        $repository = $this->getDoctrine()->getRepository(WaitingUser::class);
+        //$waitingUsers =  $repository-   (0, 0, 500);
+        dump($waitingUsers);
+
+        // In case our GET was a success we need to return a 200 HTTP OK response with the collection of waitingUser object
+        return View::create($waitingUsers, Response::HTTP_OK);
+    }
+
+    /**
+     * Retrieves a collection of  WaitingUser with same destination resource
+     * @Rest\Get("/waiting_users/getbyname/{name}")
+     */
+    public function getByNameWaitingUsers(string $name, Request $request): View
+    {
+        //$destination= strtolower(trim($destination));
+        $repository = $this->getDoctrine()->getRepository(WaitingUser::class);
+        $waitingUsers =  $repository->findBy(['name' => $name]);
+
+        // In case our GET was a success we need to return a 200 HTTP OK response with the collection of waitingUser object
+        return View::create($waitingUsers, Response::HTTP_OK);
+    }
+
+
+
 }
