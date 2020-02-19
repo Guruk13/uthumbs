@@ -117,7 +117,6 @@ class WaitingUserController extends FOSRestController
         return View::create([], Response::HTTP_NO_CONTENT);
     }
 
-<<<<<<< HEAD
 
     /**
      * Retrieves a collection of  WaitingUser with same destination resource
@@ -150,7 +149,6 @@ class WaitingUserController extends FOSRestController
     }
 
 
-=======
     //@ParamConverter("waitingUser", options={"mapping": {"userName" : "name"}})
     /**
      * Removes the WaitingUser resource
@@ -172,5 +170,4 @@ class WaitingUserController extends FOSRestController
         // In case our DELETE was a success we need to return a 204 HTTP NO CONTENT response. The object is deleted.
         return View::create([], Response::HTTP_NO_CONTENT);
     }
->>>>>>> 6536e9eae384a208a3e35dc7459ae61e6e68d854
 }
