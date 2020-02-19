@@ -19,6 +19,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 class LocationController  extends FOSRestController
 {
+
+
     /**
      * Creates an Location resource
      * @Rest\Post("/locations")
@@ -28,7 +30,6 @@ class LocationController  extends FOSRestController
     public function postLocation(Request $request): View
     {
         $mediaType = $request->attributes->get('media_type');
-
         //encode/decode 
         dump($mediaType);
         $encoders = [new XmlEncoder(), new JsonEncoder()];
@@ -73,7 +74,6 @@ class LocationController  extends FOSRestController
         // In case our GET was a success we need to return a 200 HTTP OK response with the request object
         return View::create($location, Response::HTTP_OK);
     }
-
     /**
      * Replaces Location resource
      * @Rest\Put("/locations/{locationId}")
@@ -87,9 +87,9 @@ class LocationController  extends FOSRestController
             $encoders = [new XmlEncoder(), new JsonEncoder()];
             $normalizers = [new ObjectNormalizer()];
             $serializer = new Serializer($normalizers, $encoders);
-            $jsonContent = $request->getContent();
+            $jsonContent = $request->getContent();;
             $location = $serializer->deserialize($jsonContent, Location::class, 'json');
- 
+
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($location);
             $entityManager->flush();
@@ -114,4 +114,5 @@ class LocationController  extends FOSRestController
         // In case our DELETE was a success we need to return a 204 HTTP NO CONTENT response. The object is deleted.
         return View::create([], Response::HTTP_NO_CONTENT);
     }
+
 }
