@@ -25,7 +25,6 @@ class Waiting extends Component {
   }
 
   componentWillUnmount() {
-    console.log("Remove waiting");
     BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
   }
 
@@ -43,6 +42,7 @@ class Waiting extends Component {
     this.setState({ fontLoaded: true });
 
     this.findCoordinates();
+
   }
 
   findCoordinates = () => {
@@ -70,6 +70,21 @@ class Waiting extends Component {
       { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
     );
   };
+
+  deleteUser() {
+
+    fetch('http://185.212.225.143/api/waiting_user/name/' + this.props.username, {
+      method: 'DELETE',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+
+      }),
+    });
+    console.log("data removed")
+  }
 
   render() {
     return (
@@ -121,7 +136,8 @@ class Waiting extends Component {
               <DialogButton
                 text="OK"
                 onPress={() => {
-                  this.setState({ dialogOpen: false })
+                  this.setState({ dialogOpen: false });
+                  this.deleteUser();
                   this.props.navigation.push('Home');
                 }}
               />
