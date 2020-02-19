@@ -164,10 +164,27 @@ class WaitingUserController extends FOSRestController
     {
         //$destination= strtolower(trim($destination));
         $repository = $this->getDoctrine()->getRepository(WaitingUser::class);
-        $waitingUsers =  $repository->ZA_WARUDO(0, 0, 500);
+        //$waitingUsers =  $repository-   (0, 0, 500);
         dump($waitingUsers);
 
         // In case our GET was a success we need to return a 200 HTTP OK response with the collection of waitingUser object
         return View::create($waitingUsers, Response::HTTP_OK);
     }
+
+    /**
+     * Retrieves a collection of  WaitingUser with same destination resource
+     * @Rest\Get("/waiting_users/getbyname/{name}")
+     */
+    public function getByNameWaitingUsers(string $name, Request $request): View
+    {
+        //$destination= strtolower(trim($destination));
+        $repository = $this->getDoctrine()->getRepository(WaitingUser::class);
+        $waitingUsers =  $repository->findBy(['name' => $name]);
+
+        // In case our GET was a success we need to return a 200 HTTP OK response with the collection of waitingUser object
+        return View::create($waitingUsers, Response::HTTP_OK);
+    }
+
+
+
 }
