@@ -123,6 +123,11 @@ class WaitingUserController extends FOSRestController
             if (is_string($name) && isset($name)) {
                 $waitingUser->setName($name);
             }
+            if (is_string($parametersAsArray["driver_name"]) && isset($parametersAsArray["driver_name"])) {
+                $waitingUser->setDriverName($parametersAsArray["driver_name"]);
+            }
+
+
             dump($waitingUser);
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($waitingUser);
