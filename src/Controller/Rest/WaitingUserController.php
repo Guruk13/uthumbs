@@ -40,9 +40,9 @@ class WaitingUserController extends FOSRestController
         $waitingUser = new WaitingUser();
         $jsonContent =  $request->getContent();
         $waitingUser = $serializer->deserialize($jsonContent, WaitingUser::class, 'json');
-        $waitingUser->setAcceptWalker(false);
+        $waitingUser->setAcceptWalker(null);
         $waitingUser->setAcceptDriver(false);
-        $waitingUser->setDriverName("");
+        $waitingUser->setDriverName();
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->persist($waitingUser);
 
@@ -87,16 +87,23 @@ class WaitingUserController extends FOSRestController
     {
         $repository = $this->getDoctrine()->getRepository(WaitingUser::class);
         $waitingUser = $repository->findById($userId);
+        dump($waitingUser);
+        $waitingUser->setName('WTF???');
+        dump($waitingUser);
         
         if ($waitingUser) {
+
             //encode/decode 
             $encoders = [new XmlEncoder(), new JsonEncoder()];
             $normalizers = [new ObjectNormalizer()];
             $serializer = new Serializer($normalizers, $encoders);
             $jsonContent = $request->getContent();
+            dump('Hellothere');
+            $waitingUser->setName("ErwanMcGregor");
+            dump($waitingUser);
             $waitingUser = $serializer->deserialize($jsonContent, WaitingUser::class, 'json');
-            $waitingUser->setId($userId);
 
+            dump($waitingUser);
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($waitingUser);
             $entityManager->flush();
@@ -167,7 +174,7 @@ class WaitingUserController extends FOSRestController
         //$destination= strtolower(trim($destination));
         $repository = $this->getDoctrine()->getRepository(WaitingUser::class);
         //$waitingUsers =  $repository-   (0, 0, 500);
-        dump($waitingUsers);
+        //dump($waitingUsers);
 
         // In case our GET was a success we need to return a 200 HTTP OK response with the collection of waitingUser object
         return View::create($waitingUsers, Response::HTTP_OK);
