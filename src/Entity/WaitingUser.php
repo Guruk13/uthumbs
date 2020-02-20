@@ -51,16 +51,6 @@ class WaitingUser
      */
     private $driverName;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $deletablefield;
-
-    /**
-     * @ORM\Column(type="boolean", nullable=true)
-     */
-    private $deletableboolean;
-
     public function getId(): ?int
     {
         return $this->id;

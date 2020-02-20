@@ -82,29 +82,31 @@ class WaitingUserController extends FOSRestController
 
     /**
      * Replaces WaitingUser resource
-     * @Rest\Put("/waiting_user/edit/{userId}")
+     * 
+     * @Rest\Put("/waiting_user/edit/{name}")
      */
-    public function putWaitingUser(int $userId, Request $request): View
+    public function putWaitingUser(string $name, Request $request): View
     {
         $repository = $this->getDoctrine()->getRepository(WaitingUser::class);
-        $waitingUser = $repository->findById($userId);
-        dump($waitingUser);
-        $waitingUser->setName('WTF???');
-        dump($waitingUser);
+        $waitingUser = $repository->findBy(['name' => $name]);
+        $waitingUser =$waitingUser[0];
+
         
-        if ($waitingUser) {
+        if ($waitingUser) { 
+            $acceptPede = $request->get('accept_walker');
+            $acceptDriver = $request->get('accept_driver');
+            $name = $request->get('name');
 
-            //encode/decode 
-            $encoders = [new XmlEncoder(), new JsonEncoder()];
-            $normalizers = [new ObjectNormalizer()];
-            $serializer = new Serializer($normalizers, $encoders);
-            $jsonContent = $request->getContent();
-            dump('Hellothere');
-            $waitingUser->setName("ErwanMcGregor");
-            dump($waitingUser);
-            $waitingUser = $serializer->deserialize($jsonContent, WaitingUser::class, 'json');
+            if(is_bool($acceptPede)){
+                $waitingUser->setAcceptWalker($acceptPede);
+            }
+            if(is_bool($acceptDriver)){
+                $waitingUser->setAcceptDriver($acceptDriver);
+            }
 
-            dump($waitingUser);
+            if(is_string($name)){
+                $waitingUser->setAcceptDriver($name);
+            }
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($waitingUser);
             $entityManager->flush();
