@@ -112,16 +112,16 @@ class WaitingUserController extends FOSRestController
 
 
             if (isset($parametersAsArray["accept_walker"])) {
-                $waitingUser->setAcceptWalker(boolval ($parametersAsArray["accept_walker"]));
+                $waitingUser->setAcceptWalker(boolval($parametersAsArray["accept_walker"]));
             }
 
 
             if (isset($parametersAsArray["accept_driver"])) {
-                $waitingUser->setAcceptDriver(boolval ($parametersAsArray["accept_driver"]));
+                $waitingUser->setAcceptDriver(boolval($parametersAsArray["accept_driver"]));
             }
 
             if (is_string($name) && isset($name)) {
-                $waitingUser->setAcceptDriver($name);
+                $waitingUser->setName($name);
             }
             dump($waitingUser);
             $entityManager = $this->getDoctrine()->getManager();

@@ -109,7 +109,7 @@ class WaitingUser
         return $this->acceptWalker;
     }
 
-    public function setAcceptWalker( $acceptWalker): self
+    public function setAcceptWalker(bool $acceptWalker): self
     {
         $this->acceptWalker = $acceptWalker;
 
