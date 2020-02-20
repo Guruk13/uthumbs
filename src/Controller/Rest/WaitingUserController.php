@@ -89,11 +89,11 @@ class WaitingUserController extends FOSRestController
     {
         $repository = $this->getDoctrine()->getRepository(WaitingUser::class);
         $waitingUser = $repository->findBy(['name' => $name]);
-        $waitingUser =$waitingUser[0];
+        $waitingUser = $waitingUser[0];
         dump($waitingUser);
 
-        
-        if ($waitingUser) { 
+
+        if ($waitingUser) {
             $acceptPede = $request->get('accept_walker');
             $acceptDriver = $request->get('accept_driver');
             $name = $request->get('name');
@@ -104,16 +104,17 @@ class WaitingUserController extends FOSRestController
             }
             dump($parametersAsArray);
 
-            
 
-            if(is_bool($parametersAsArray["accept_walker"])&& isset($parametersAsArray["accept_walker"])){
-                $waitingUser->setAcceptWalker($parametersAsArray["accept_walker"]);
+            if (isset($parametersAsArray["accept_walker"])) {
+                if (is_bool($parametersAsArray["accept_walker"])) {
+                    $waitingUser->setAcceptWalker($parametersAsArray["accept_walker"]);
+                }
             }
-            if(is_bool($parametersAsArray["accept_driver"])&& isset($parametersAsArray["accept_driver"])){
+            if (is_bool($parametersAsArray["accept_driver"]) && isset($parametersAsArray["accept_driver"])) {
                 $waitingUser->setAcceptDriver($parametersAsArray["accept_driver"]);
             }
 
-            if(is_string($name) && isset($name)){
+            if (is_string($name) && isset($name)) {
                 $waitingUser->setAcceptDriver($name);
             }
             dump($waitingUser);
@@ -206,7 +207,4 @@ class WaitingUserController extends FOSRestController
         // In case our GET was a success we need to return a 200 HTTP OK response with the collection of waitingUser object
         return View::create($waitingUsers, Response::HTTP_OK);
     }
-
-
-
 }
