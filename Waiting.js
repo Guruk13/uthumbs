@@ -15,12 +15,16 @@ class Waiting extends Component {
     this.state = {
       dialogOpen: false,
       fontLoaded: false,
+      isDriverAvailable: false,
       latitude: 0,
       longitude: 0,
+      interval: null,
+      titleText: 'En attente d\'un conducteur à destination de ',
     };
   }
 
   UNSAFE_componentWillMount() {
+    this.setState({ interval: setInterval(() => this.searchDriver(), 5000) });
     BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
   }
 
@@ -32,6 +36,22 @@ class Waiting extends Component {
     this.onButtonQuitClick();
     return true;
   };
+
+  searchDriver() {
+    fetch('http://185.212.225.143/api/waiting_users/getbyname/' + this.props.username)
+      .then((response) => response.json())
+      .then((responseJson) => {
+        if (responseJson != null) {
+          if (responseJson[0].accept_driver) {
+            this.setState({ isDriverAvailable: true });
+            clearInterval(this.state.interval);
+          }
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
 
   async componentDidMount() {
     await Font.loadAsync({
@@ -48,7 +68,6 @@ class Waiting extends Component {
   findCoordinates = () => {
     navigator.geolocation.getCurrentPosition(
       position => {
-
         this.setState({ latitude: position.coords.latitude, longitude: position.coords.longitude }, function () {
           fetch('http://185.212.225.143/api/waiting_user', {
             method: 'POST',
@@ -63,7 +82,6 @@ class Waiting extends Component {
               destination: this.props.destination.nom
             }),
           });
-          console.log("data sent")
         });
       },
       error => Alert.alert(error.message),
@@ -83,7 +101,6 @@ class Waiting extends Component {
 
       }),
     });
-    console.log("data removed")
   }
 
   render() {
@@ -93,7 +110,7 @@ class Waiting extends Component {
         {
           this.state.fontLoaded ? (
             <View style={styles.titleContainer}>
-              <Text style={styles.title}>En attente d'un conducteur à destination de {this.props.destination.nom}
+              <Text style={styles.title}> {this.state.titleText}{this.props.destination.nom}
               </Text>
               <AnimatedEllipsis numberOfDots={3}
                 animationDelay={150}
@@ -138,6 +155,7 @@ class Waiting extends Component {
                 onPress={() => {
                   this.setState({ dialogOpen: false });
                   this.deleteUser();
+                  clearInterval(this.state.interval);
                   this.props.navigation.push('Home');
                 }}
               />
@@ -146,6 +164,37 @@ class Waiting extends Component {
         >
           <DialogContent>
             <Text style={styles.dialogContent}>Voulez-vous vraiment arrêter la recherche ?</Text>
+          </DialogContent>
+        </Dialog>
+
+
+        <Dialog
+          style={styles.popUp}
+          visible={this.state.isDriverAvailable}
+          footer={
+            <DialogFooter>
+              <DialogButton
+                text="Non"
+                onPress={() => {
+                  this.setState({ isDriverAvailable: false });
+                  this.setState({ interval: setInterval(() => this.searchDriver(), 5000) });
+                  // requete update a mettre a false des deux cotés !
+                  // probleme --> default flase 
+                }}
+              />
+              <DialogButton
+                text="Oui"
+                onPress={() => {
+                  this.setState({ isDriverAvailable: false });
+                  //requete update a mettre a true
+                  this.setState({titleText: 'Le conducteur est en route pour vous prendre en charge en direction de : '});
+                }}
+              />
+            </DialogFooter>
+          }
+        >
+          <DialogContent>
+            <Text style={styles.dialogContent}>Un utilisateur est prêt à venir vous chercher ! Accepter ?</Text>
           </DialogContent>
         </Dialog>
 
@@ -170,6 +219,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontFamily: 'Montserrat-Bold',
     textAlign: 'center',
+    margin: 10,
 
   },
   titleContainer: {
