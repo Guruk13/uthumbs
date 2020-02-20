@@ -87,10 +87,10 @@ class WaitingUserController extends FOSRestController
      */
     public function putWaitingUser(string $name, Request $request): View
     {
-        dump('hello');  
         $repository = $this->getDoctrine()->getRepository(WaitingUser::class);
         $waitingUser = $repository->findBy(['name' => $name]);
         $waitingUser =$waitingUser[0];
+        dump($waitingUser);
 
         
         if ($waitingUser) { 
@@ -99,7 +99,7 @@ class WaitingUserController extends FOSRestController
             $name = $request->get('name');
             dump($acceptDriver);
             dump($acceptPede);
-            
+
 
             if(is_bool($acceptPede)){
                 $waitingUser->setAcceptWalker($acceptPede);
