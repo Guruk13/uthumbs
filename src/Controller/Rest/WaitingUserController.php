@@ -41,8 +41,9 @@ class WaitingUserController extends FOSRestController
         $jsonContent =  $request->getContent();
         $waitingUser = $serializer->deserialize($jsonContent, WaitingUser::class, 'json');
         $waitingUser->setAcceptWalker(null);
+        $waitingUser->setDeletableboolean(null);
         $waitingUser->setAcceptDriver(false);
-        $waitingUser->setDriverName();
+        $waitingUser->setDriverName("");
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->persist($waitingUser);
 

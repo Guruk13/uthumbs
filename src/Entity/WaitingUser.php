@@ -37,7 +37,7 @@ class WaitingUser
     private $destination;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", nullable=true)
      */
     private $acceptWalker;
 
@@ -50,6 +50,16 @@ class WaitingUser
      * @ORM\Column(type="string", length=255)
      */
     private $driverName;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $deletablefield;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $deletableboolean;
 
     public function getId(): ?int
     {
@@ -109,7 +119,7 @@ class WaitingUser
         return $this->acceptWalker;
     }
 
-    public function setAcceptWalker(bool $acceptWalker): self
+    public function setAcceptWalker( $acceptWalker): self
     {
         $this->acceptWalker = $acceptWalker;
 
@@ -136,6 +146,30 @@ class WaitingUser
     public function setDriverName(string $driverName): self
     {
         $this->driverName = $driverName;
+
+        return $this;
+    }
+
+    public function getDeletablefield(): ?string
+    {
+        return $this->deletablefield;
+    }
+
+    public function setDeletablefield(?string $deletablefield): self
+    {
+        $this->deletablefield = $deletablefield;
+
+        return $this;
+    }
+
+    public function getDeletableboolean(): ?bool
+    {
+        return $this->deletableboolean;
+    }
+
+    public function setDeletableboolean(?bool $deletableboolean): self
+    {
+        $this->deletableboolean = $deletableboolean;
 
         return $this;
     }
