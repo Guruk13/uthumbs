@@ -103,10 +103,11 @@ class WaitingUserController extends FOSRestController
                 $parametersAsArray = json_decode($content, true);
             }
             dump($parametersAsArray);
-            dump($parametersAsArray["accept_walker"]);
-            dump($parametersAsArray["accept_driver"]);
+
             if(is_bool(boolval ($parametersAsArray["accept_walker"]))){
                 dump('NIKE LA MARQUEDE CHAUSSURE');
+                dump(boolval ($parametersAsArray["accept_walker"]));
+                dump(boolval ($parametersAsArray["accept_driver"]));
             }
 
 
