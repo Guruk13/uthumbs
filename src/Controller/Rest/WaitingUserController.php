@@ -98,12 +98,13 @@ class WaitingUserController extends FOSRestController
             $acceptDriver = $request->get('accept_driver');
             $name = $request->get('name');
             $jsonContent =  $request->getContent();
-            dump($request->get('accept_driver'));
-            dump($jsonContent);
-            dump($name);
-            dump($acceptDriver);
-            dump($acceptPede);
+            $parametersAsArray = [];
+            if ($content = $request->getContent()) {
+                $parametersAsArray = json_decode($content, true);
+            }
+            dump($parametersAsArray);
 
+            
 
             if(is_bool($acceptPede)){
                 $waitingUser->setAcceptWalker($acceptPede);
