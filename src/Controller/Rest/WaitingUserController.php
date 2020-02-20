@@ -104,7 +104,7 @@ class WaitingUserController extends FOSRestController
             }
             dump($parametersAsArray);
             dump($parametersAsArray["accept_walker"]);
-            dump($parametersAsArray["accept_drive"]);
+            dump($parametersAsArray["accept_driver"]);
 
 
             if (isset($parametersAsArray["accept_walker"])) {
