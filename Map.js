@@ -39,8 +39,12 @@ class Map extends Component {
       courseStarted: false,
       ready: false,
       intervalId: null,
-      pedestrians: null,
+      intervalIdWalker: null,
+      pedestrian: null,
       dialogOpen: false,
+      acceptWalker: false,
+      refuseWalker: false,
+      dialogWalkerFound: false
     };
 
     this.pubnub = new PubNubReact({
@@ -141,17 +145,61 @@ class Map extends Component {
     }
   }
 
+  acceptDriver() {
+    console.log(this.props.username);
+    //requete update a mettre a true
+    fetch('http://185.212.225.143/api/waiting_user/edit/' + this.state.pedestrian.name, {
+      method: 'PUT',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        accept_walker: false,
+        accept_driver: true,
+        driver_name: this.props.username
+      }),
+    });
+  }
+
   searchingPedestrians() {
     return fetch('http://185.212.225.143/api/waiting_users/destination/' + this.props.destination.nom)
       .then(response => response.json())
       .then(responseJson => {
         if (responseJson.length) {
-          this.setState({
-            pedestrians: responseJson
-          });
+          for (let pedestrian of responseJson) {
+            
+            if (!pedestrian.accept_driver) {
+              
+              this.setState({
+                pedestrian: pedestrian,
+                dialogWalkerFound: true
+              });
+            }
+          }
         }
       })
       .catch(error => {
+        console.error(error);
+      });
+  }
+
+  searchPedestrian() {
+    fetch('http://185.212.225.143/api/waiting_users/getbyname/' + this.state.pedestrian.name)
+      .then((response) => response.json())
+      .then((responseJson) => {
+        if (responseJson.length) {
+          if (responseJson[0].accept_walker) {
+            this.setState({ acceptWalker: true });
+            clearInterval(this.state.interval);
+          } else {
+            this.setState({ refuseWalker: true });
+          }
+        } else {
+          this.setState({ intervalId: setInterval(this.searchingPedestrians.bind(this)) });
+        }
+      })
+      .catch((error) => {
         console.error(error);
       });
   }
@@ -233,23 +281,22 @@ class Map extends Component {
         </Dialog>
         <Dialog
           style={styles.popUp}
-          visible={this.state.pedestrians != null}
+          visible={this.state.dialogWalkerFound}
           onTouchOutside={() => {
-            this.setState({ pedestrians: null });
+            this.setState({ dialogWalkerFound: false });
           }}
           footer={
             <DialogFooter>
               <DialogButton
                 text="Refuser"
-                onPress={() => { this.setState({ pedestrians: null }) }}
+                onPress={() => { this.setState({ dialogWalkerFound: false }) }}
               />
               <DialogButton
                 text="Accepter"
                 onPress={() => {
-                  this.setState({ dialogOpen: false });
-                  console.log(this.state.intervalId);
+                  this.acceptDriver();
                   clearInterval(this.state.intervalId);
-                  this.props.navigation.push('Home');
+                  this.setState({ intervalIdWalker: setInterval(this.searchPedestrian.bind(this)), dialogWalkerFound: false });
                 }}
               />
             </DialogFooter>
@@ -257,9 +304,9 @@ class Map extends Component {
         >
           <DialogContent>
             {
-              this.state.pedestrians != null ? (
-              <Text style={styles.dialogContent}>{this.state.pedestrians[0].name} se trouve dans les environs, acceptes-tu de le dépanner ?</Text>
-              ): null 
+              this.state.pedestrian != null ? (
+                <Text style={styles.dialogContent}>{this.state.pedestrian.name} se trouve dans les environs, acceptes-tu de le dépanner ?</Text>
+              ) : null
             }
           </DialogContent>
         </Dialog>
@@ -310,7 +357,8 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => {
   return {
-    destination: state.destination.destination
+    destination: state.destination.destination,
+    username: state.username.username
   };
 }
 export default connect(mapStateToProps)(Map);
