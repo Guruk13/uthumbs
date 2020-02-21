@@ -20,6 +20,7 @@ class Waiting extends Component {
       longitude: 0,
       interval: null,
       titleText: 'En attente d\'un conducteur à destination de ',
+      driverName: null
     };
   }
 
@@ -41,8 +42,9 @@ class Waiting extends Component {
     fetch('http://185.212.225.143/api/waiting_users/getbyname/' + this.props.username)
       .then((response) => response.json())
       .then((responseJson) => {
-        if (responseJson != null) {
-          if (responseJson[0].accept_driver) {
+        if (responseJson != undefined) {
+          if (responseJson[0].accept_driver && (responseJson[0].accept_walker == null)) {
+            this.driverName = responseJson[0].driver_name;
             this.setState({ isDriverAvailable: true });
             clearInterval(this.state.interval);
           }
@@ -179,22 +181,48 @@ class Waiting extends Component {
                   this.setState({ isDriverAvailable: false });
                   this.setState({ interval: setInterval(() => this.searchDriver(), 5000) });
                   // requete update a mettre a false des deux cotés !
-                  // probleme --> default flase 
+
+                  console.log("editing")
+                  fetch('http://185.212.225.143/api/waiting_user/edit/' + this.props.username, {
+                    method: 'PUT',
+                    headers: {
+                      Accept: 'application/json',
+                      'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                      accept_walker: false,
+                      accept_driver: false,
+                      driver_name: this.driverName
+                    }),
+                  });
+
                 }}
               />
               <DialogButton
                 text="Oui"
                 onPress={() => {
                   this.setState({ isDriverAvailable: false });
+                  this.setState({ titleText: 'Le conducteur est en route pour vous prendre en charge en direction de : ' });
                   //requete update a mettre a true
-                  this.setState({titleText: 'Le conducteur est en route pour vous prendre en charge en direction de : '});
+                  fetch('http://185.212.225.143/api/waiting_user/edit/' + this.props.username, {
+                    method: 'PUT',
+                    headers: {
+                      Accept: 'application/json',
+                      'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                      accept_walker: true,
+                      accept_driver: true,
+                      driver_name: this.driverName
+                    }),
+                  });
                 }}
               />
             </DialogFooter>
           }
         >
           <DialogContent>
-            <Text style={styles.dialogContent}>Un utilisateur est prêt à venir vous chercher ! Accepter ?</Text>
+            <Text style={styles.dialogContent}>{this.driverName} est prêt à venir vous chercher ! Accepter ?</Text>
           </DialogContent>
         </Dialog>
 
