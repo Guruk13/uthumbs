@@ -4,6 +4,7 @@ import { AppRegistry, View, StyleSheet, Dimensions, TouchableOpacity, Text, Back
 import MapViewDirections from 'react-native-maps-directions';
 import { connect } from 'react-redux'
 import PubNubReact from "pubnub-react";
+import AnimatedEllipsis from 'react-native-animated-ellipsis';
 import * as Font from 'expo-font';
 import * as Location from 'expo-location';
 import Dialog, { SlideAnimation, DialogContent, DialogFooter, DialogButton, PopupDialog } from 'react-native-popup-dialog';
@@ -21,8 +22,8 @@ const SPACE = 0.01;
 const GOOGLE_MAPS_APIKEY = 'AIzaSyB2sGMhio_-YehtPloM5a2qjFnojLzil2k';
 
 class Map extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       latitude: LATITUDE,
       longitude: LONGITUDE,
@@ -35,6 +36,7 @@ class Map extends Component {
         longitudeDelta: 0
       }),
       markers: [],
+      actualDestination: this.props.destination,
       fontLoaded: false,
       courseStarted: false,
       ready: false,
@@ -42,9 +44,8 @@ class Map extends Component {
       intervalIdWalker: null,
       pedestrian: null,
       dialogOpen: false,
-      acceptWalker: false,
-      refuseWalker: false,
-      dialogWalkerFound: false
+      dialogWalkerFound: false,
+      waitingAnswer: false,
     };
 
     this.pubnub = new PubNubReact({
@@ -146,7 +147,6 @@ class Map extends Component {
   }
 
   acceptDriver() {
-    console.log(this.props.username);
     //requete update a mettre a true
     fetch('http://185.212.225.143/api/waiting_user/edit/' + this.state.pedestrian.name, {
       method: 'PUT',
@@ -155,7 +155,7 @@ class Map extends Component {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        accept_walker: false,
+        accept_walker: null,
         accept_driver: true,
         driver_name: this.props.username
       }),
@@ -168,9 +168,9 @@ class Map extends Component {
       .then(responseJson => {
         if (responseJson.length) {
           for (let pedestrian of responseJson) {
-            
+
             if (!pedestrian.accept_driver) {
-              
+
               this.setState({
                 pedestrian: pedestrian,
                 dialogWalkerFound: true
@@ -190,14 +190,14 @@ class Map extends Component {
       .then((responseJson) => {
         if (responseJson.length) {
           if (responseJson[0].accept_walker) {
-            this.setState({ acceptWalker: true });
-            clearInterval(this.state.interval);
-          } else {
-            this.setState({ refuseWalker: true });
-          }
+            this.setState({waitingAnswer: false, actualDestination: {latitude: this.state.pedestrian.latitude, longitude: this.state.pedestrian.longitude}});
+            this.clearIntervals();
+          } 
         } else {
-          this.setState({ intervalId: setInterval(this.searchingPedestrians.bind(this)) });
+          this.clearIntervals();
+          this.setState({ waitingAnswer: false, intervalId: setInterval(this.searchingPedestrians.bind(this)) });
         }
+
       })
       .catch((error) => {
         console.error(error);
@@ -210,9 +210,16 @@ class Map extends Component {
     }
   }
 
+  clearIntervals = () => {
+    this.setState({waitingAnswer: false});
+    clearInterval(this.state.intervalId);
+    clearInterval(this.state.intervalIdWalker);
+  }
+
   render() {
     return (
       <View style={styles.container}>
+
         <MapView
           ref={ref => (this.map = ref)}
           provider={PROVIDER_GOOGLE}
@@ -223,7 +230,7 @@ class Map extends Component {
           onRegionChangeComplete={this.focusLoc}>
           <MapView.Marker
             coordinate={
-              this.props.destination
+              this.state.actualDestination
             }
             title={"title"}
             description={"description"}
@@ -236,16 +243,36 @@ class Map extends Component {
           />
           <MapViewDirections
             origin={{ latitude: this.state.latitude, longitude: this.state.longitude }}
-            destination={this.props.destination}
+            destination={this.state.actualDestination}
             apikey={GOOGLE_MAPS_APIKEY}
             strokeWidth={5}
             strokeColor="#a64253"
           />
         </MapView>
+        {
+          this.state.waitingAnswer ? (
+            <View style={styles.textWaiting}>
+              {
+                this.state.fontLoaded ? (
+                  <Text style={{ fontSize: 21, fontFamily: 'Montserrat-Bold' }}>En attente d'une réponse de {this.state.pedestrian.name}
+                  </Text>
+                ) : null
+              }
+              <AnimatedEllipsis numberOfDots={3}
+                animationDelay={150}
+                style={{
+                  color: 'black',
+                  fontSize: 20,
+                  fontWeight: 'bold'
+                }}
+              />
+            </View>
+          ) : null
+        }
         <View style={styles.buttonArea}>
           {
             this.state.fontLoaded ? (
-              <TouchableOpacity style={{ alignItems: 'center' }} onPress={() => { this.checkLatitude(); this.setState({ courseStarted: !this.state.courseStarted }); { this.state.courseStarted ? clearInterval(this.state.intervalId) : this.setState({ intervalId: setInterval(this.searchingPedestrians.bind(this), 5000) }) } }}>
+              <TouchableOpacity style={{ alignItems: 'center' }} onPress={() => { this.checkLatitude(); this.setState({ courseStarted: !this.state.courseStarted }); { this.state.courseStarted ? this.clearIntervals() : this.setState({ intervalId: setInterval(this.searchingPedestrians.bind(this), 5000) }) } }}>
                 <Text style={{ fontSize: 21, fontFamily: 'Montserrat-Bold', paddingTop: '7%', paddingBottom: '7%' }}>{this.state.courseStarted ? 'Terminé' : 'Départ'}</Text>
               </TouchableOpacity>
             ) : null
@@ -296,7 +323,7 @@ class Map extends Component {
                 onPress={() => {
                   this.acceptDriver();
                   clearInterval(this.state.intervalId);
-                  this.setState({ intervalIdWalker: setInterval(this.searchPedestrian.bind(this)), dialogWalkerFound: false });
+                  this.setState({ intervalIdWalker: setInterval(this.searchPedestrian.bind(this), 2000), dialogWalkerFound: false, waitingAnswer: true });
                 }}
               />
             </DialogFooter>
@@ -328,6 +355,12 @@ const styles = StyleSheet.create({
   },
   map: {
     ...StyleSheet.absoluteFillObject,
+  },
+  textWaiting: {
+    flex: 1,
+    alignSelf: 'center',
+    position: 'absolute',
+    top: "10%"
   },
   dialogContent: {
     marginTop: 20,
