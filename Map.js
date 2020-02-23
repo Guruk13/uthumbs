@@ -192,6 +192,9 @@ class Map extends Component {
           if (responseJson[0].accept_walker) {
             this.setState({waitingAnswer: false, actualDestination: {latitude: this.state.pedestrian.latitude, longitude: this.state.pedestrian.longitude}});
             this.clearIntervals();
+          } else if (responseJson[0].accept_walker == false ){
+            this.clearIntervals();
+            this.setState({waitingAnswer: false, intervalId: setInterval(this.searchingPedestrians.bind(this))});
           } 
         } else {
           this.clearIntervals();
