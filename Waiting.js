@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Button, StyleSheet, TouchableOpacity, Image, ActivityIndicator, AppRegistry, BackHandler, Alert } from 'react-native';
+import { View, Text, Button, StyleSheet, TouchableOpacity, Image, ActivityIndicator, AppRegistry, BackHandler, Alert, AppState } from 'react-native';
 import AnimatedEllipsis from 'react-native-animated-ellipsis';
 import Dialog, { SlideAnimation, DialogContent, DialogFooter, DialogButton, PopupDialog } from 'react-native-popup-dialog';
 import { connect } from 'react-redux';
@@ -20,7 +20,8 @@ class Waiting extends Component {
       longitude: 0,
       interval: null,
       titleText: 'En attente d\'un conducteur à destination de ',
-      driverName: null
+      driverName: null,
+      appState: AppState.currentState,
     };
   }
 
@@ -31,7 +32,30 @@ class Waiting extends Component {
 
   componentWillUnmount() {
     BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
+    AppState.removeEventListener('change', this._handleAppStateChange);
   }
+
+  _handleAppStateChange = (nextAppState) => {
+
+    this.setState({ appState: nextAppState });
+
+    console.log('etat = ' + nextAppState);
+
+    if (nextAppState === 'background') {
+      // Do something here on app background.
+      console.log("App is in Background Mode.")
+    }
+
+    if (nextAppState === 'active') {
+      // Do something here on app active foreground mode.
+      console.log("App is in Active Foreground Mode.")
+    }
+
+    if (nextAppState === 'inactive') {
+      // Do something here on app inactive mode.
+      console.log("App is in inactive Mode.")
+    }
+  };
 
   handleBackPress = () => {
     this.onButtonQuitClick();
@@ -42,12 +66,15 @@ class Waiting extends Component {
     fetch('http://185.212.225.143/api/waiting_users/getbyname/' + this.props.username)
       .then((response) => response.json())
       .then((responseJson) => {
-        if (responseJson != undefined) {
-          if (responseJson[0].accept_driver && (responseJson[0].accept_walker == null)) {
-            this.driverName = responseJson[0].driver_name;
-            this.setState({ isDriverAvailable: true });
-            clearInterval(this.state.interval);
+        if (responseJson != null) {
+          if (responseJson.length > 0) {
+            if (responseJson[0].accept_driver && (responseJson[0].accept_walker == null)) {
+              this.driverName = responseJson[0].driver_name;
+              this.setState({ isDriverAvailable: true });
+              clearInterval(this.state.interval);
+            }
           }
+
         }
       })
       .catch((error) => {
@@ -65,7 +92,11 @@ class Waiting extends Component {
 
     this.findCoordinates();
 
+    AppState.addEventListener('change', this._handleAppStateChange);
+
   }
+
+
 
   findCoordinates = () => {
     navigator.geolocation.getCurrentPosition(
@@ -92,7 +123,6 @@ class Waiting extends Component {
   };
 
   deleteUser() {
-
     fetch('http://185.212.225.143/api/waiting_user/name/' + this.props.username, {
       method: 'DELETE',
       headers: {
@@ -179,23 +209,8 @@ class Waiting extends Component {
                 text="Non"
                 onPress={() => {
                   this.setState({ isDriverAvailable: false });
-                  this.setState({ interval: setInterval(() => this.searchDriver(), 5000) });
-                  // requete update a mettre a false des deux cotés !
-
-                  console.log("editing")
-                  fetch('http://185.212.225.143/api/waiting_user/edit/' + this.props.username, {
-                    method: 'PUT',
-                    headers: {
-                      Accept: 'application/json',
-                      'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                      accept_walker: false,
-                      accept_driver: false,
-                      driver_name: this.driverName
-                    }),
-                  });
-
+                  this.deleteUser();
+                  this.props.navigation.push('Home');
                 }}
               />
               <DialogButton
@@ -222,7 +237,7 @@ class Waiting extends Component {
           }
         >
           <DialogContent>
-            <Text style={styles.dialogContent}>{this.driverName} est prêt à venir vous chercher ! Accepter ?</Text>
+            <Text style={styles.dialogContent}>{this.driverName} est prêt à venir vous chercher ! Accepter ? (refuser vous fera arrêter la recherche)</Text>
           </DialogContent>
         </Dialog>
 

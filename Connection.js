@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
     inputStyle: {
         borderWidth: 1,
         borderColor: 'white',
-        padding: '2%',
+        padding: 8,
         textAlign: 'center',
         borderRadius: 10,
         width: 200,
@@ -180,7 +180,6 @@ const styles = StyleSheet.create({
     },
     dialogButton: {
         color: 'red',
-
     }
 
 });

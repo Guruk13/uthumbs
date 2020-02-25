@@ -117,12 +117,8 @@ const styles = StyleSheet.create({
     width: 250
   },
   titleStyle: {
-    // marginBottom: 10,
     color: "white",
     fontSize: 18
-  },
-  touchableStyle: {
-    borderRadius: 100,
   },
   buttonsContainer: {
     flexDirection: 'column',
