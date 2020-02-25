@@ -52,52 +52,42 @@ class WaitingUserRepository extends ServiceEntityRepository
         ;
     }
     */
-    /*
-
-https://stackoverflow.com/questions/42799118/mysql-find-points-within-radius-from-database
-
-    SELECT id, 
-( 6371 * 
-    ACOS( 
-        COS( RADIANS( db_latitude ) ) * 
-        COS( RADIANS( $user_latitude ) ) * 
-        COS( RADIANS( $user_longitude ) - 
-        RADIANS( db_longitude ) ) + 
-        SIN( RADIANS( db_latitude ) ) * 
-        SIN( RADIANS( $user_latitude) ) 
-    ) 
-) 
-AS distance FROM the_table HAVING distance <= $the_radius ORDER BY distance ASC"
-
-
-db_latitude = database latitude field
-db_longitude = database longitude field
-$user_latitude = browser latitude coördinate
-$user_longitude = browser longitude coördinate
-$the_radius = the radius that you want to search in
-    * */
-
+    
 
     //get the points within a kilometer radius  close to a point in ZA WARUDO
-    public function ZA_WARUDO(float $givenLongitude ,float  $givenLatitude, float $radiusKm)
+    public function findInRadius(float $givenLongitude ,float  $givenLatitude, float $radiusKm, int $thatmuch = 5  )
     {
         $conn = $this->getEntityManager()
             ->getConnection();
-        $sql =
-         'SELECT id, 
-        ( 6371 * 
-            ACOS( 
-                COS( RADIANS( w.latitude ) ) * 
-                COS( RADIANS( :latitude) ) * 
-                COS( RADIANS( :longitude ) - 
-                RADIANS( w.latitude ) ) + 
-                SIN( RADIANS( w.latitude) ) * 
-                SIN( RADIANS( :latitude) ) 
-            ) 
-        ) 
-        AS distance FROM waiting_user as w  HAVING distance <= :radiusInKm ORDER BY distance ASC';
+    
+        $sql2 =' SELECT *
+        FROM (
+       SELECT w.name,w.latitude,w.longitude,
+              p.radius,
+              p.distance_unit
+                       * DEGREES(ACOS(GREATEST(1.0, COS(RADIANS(p.latpoint))
+                       * COS(RADIANS(w.latitude))
+                       * COS(RADIANS(p.longpoint - w.longitude))
+                       + SIN(RADIANS(p.latpoint))
+                       * SIN(RADIANS(w.latitude))))) AS distance
+        FROM waiting_user AS w
+        JOIN (
+              SELECT  :latitude  AS latpoint,  :longitude AS longpoint,
+                      :radiusInKm AS radius,      111.045 AS distance_unit
+          ) AS p ON 1=1
+        WHERE w.latitude
+           BETWEEN p.latpoint  - (p.radius / p.distance_unit)
+               AND p.latpoint  + (p.radius / p.distance_unit)
+          AND w.longitude
+           BETWEEN p.longpoint - (p.radius / (p.distance_unit * COS(RADIANS(p.latpoint))))
+               AND p.longpoint + (p.radius / (p.distance_unit * COS(RADIANS(p.latpoint))))
+       ) AS d
+       WHERE distance <= radius
+       ORDER BY distance
+       LIMIT '.$thatmuch;
 
-        $stmt = $conn->prepare($sql);
+
+        $stmt = $conn->prepare($sql2);
         $stmt->execute(array(
             'latitude' => $givenLatitude,
             'longitude' => $givenLongitude,

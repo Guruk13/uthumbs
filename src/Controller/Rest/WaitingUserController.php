@@ -102,13 +102,7 @@ class WaitingUserController extends FOSRestController
             if ($content = $request->getContent()) {
                 $parametersAsArray = json_decode($content, true);
             }
-            dump($parametersAsArray);
 
-            if(is_bool(boolval ($parametersAsArray["accept_walker"]))){
-                dump('NIKE LA MARQUEDE CHAUSSURE');
-                dump(boolval ($parametersAsArray["accept_walker"]));
-                dump(boolval ($parametersAsArray["accept_driver"]));
-            }
 
 
             if (isset($parametersAsArray["accept_walker"])) {
@@ -206,14 +200,24 @@ class WaitingUserController extends FOSRestController
     }
 
     /**
-     * Retrieves a collection of  WaitingUser with same destination resource
-     * @Rest\Get("/waiting_users/getbyname/{name}")
+     * Retrieves a collection of  WaitingUser within radius of pos
+     * @Rest\Post("/waiting_users/inradius")
      */
-    public function getByNameWaitingUsers(string $name, Request $request): View
+    public function getByNameWaitingUsers( Request $request): View
     {
+
+        $parametersAsArray = [];
+        if ($content = $request->getContent()) {
+            $parametersAsArray = json_decode($content, true);
+        }
+        $longitude =$parametersAsArray['longitude'];
+        $latitude = $parametersAsArray['latitude'];
+        $radiusInKm = $parametersAsArray['radius'];
+        $limit = $parametersAsArray['limit'];
+
         //$destination= strtolower(trim($destination));
         $repository = $this->getDoctrine()->getRepository(WaitingUser::class);
-        $waitingUsers =  $repository->findBy(['name' => $name]);
+        $waitingUsers =  $repository->findInradius($longitude, $latitude, $radiusInKm, $limit);
 
         // In case our GET was a success we need to return a 200 HTTP OK response with the collection of waitingUser object
         return View::create($waitingUsers, Response::HTTP_OK);
