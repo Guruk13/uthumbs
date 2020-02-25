@@ -46,6 +46,7 @@ class Map extends Component {
       dialogOpen: false,
       dialogWalkerFound: false,
       waitingAnswer: false,
+      dialogCatch: false
     };
 
     this.pubnub = new PubNubReact({
@@ -163,13 +164,14 @@ class Map extends Component {
   }
 
   searchingPedestrians() {
-    return fetch('http://185.212.225.143/api/waiting_users/destination/' + this.props.destination.nom)
+    return fetch('http://185.212.225.143/api/waiting_users/getuserinradius/radius?latitude=' + this.state.latitude + '&longitude=' + this.state.longitude + '&radius=1&limit=5&destination=' + this.props.destination.nom)
       .then(response => response.json())
       .then(responseJson => {
         if (responseJson.length) {
+          
           for (let pedestrian of responseJson) {
-
-            if (!pedestrian.accept_driver) {
+            if (pedestrian.accept_driver == false ) {
+              
 
               this.setState({
                 pedestrian: pedestrian,
@@ -190,12 +192,12 @@ class Map extends Component {
       .then((responseJson) => {
         if (responseJson.length) {
           if (responseJson[0].accept_walker) {
-            this.setState({waitingAnswer: false, actualDestination: {latitude: this.state.pedestrian.latitude, longitude: this.state.pedestrian.longitude}});
+            this.setState({ waitingAnswer: false, actualDestination: { latitude: this.state.pedestrian.latitude, longitude: this.state.pedestrian.longitude }, dialogCatch: true });
             this.clearIntervals();
-          } else if (responseJson[0].accept_walker == false ){
+          } else if (responseJson[0].accept_walker == false) {
             this.clearIntervals();
-            this.setState({waitingAnswer: false, intervalId: setInterval(this.searchingPedestrians.bind(this))});
-          } 
+            this.setState({ waitingAnswer: false, intervalId: setInterval(this.searchingPedestrians.bind(this)) });
+          }
         } else {
           this.clearIntervals();
           this.setState({ waitingAnswer: false, intervalId: setInterval(this.searchingPedestrians.bind(this)) });
@@ -214,7 +216,7 @@ class Map extends Component {
   }
 
   clearIntervals = () => {
-    this.setState({waitingAnswer: false});
+    this.setState({ waitingAnswer: false });
     clearInterval(this.state.intervalId);
     clearInterval(this.state.intervalIdWalker);
   }
@@ -271,6 +273,26 @@ class Map extends Component {
               />
             </View>
           ) : null
+        }
+        {
+          this.state.dialogCatch ? 
+          (
+        <View style={styles.buttonCatch}>
+          {
+            this.state.fontLoaded ? (
+              <Text style={{ fontFamily: 'Montserrat-Bold', fontSize: 21, paddingBottom: "5%", paddingTop: "5%" }}> { this.state.pedestrian != null ? ( "Avez-vous récupéré " + this.state.pedestrian.name + " ?" ) : null}</Text>
+            ) : null
+          }
+          <TouchableOpacity style={{ borderWidth: 1, borderColor: 'black', marginBottom: "5%", borderRadius: 10 }} onPress={() => {this.setState({actualDestination: {latitude: this.props.destination.latitude, longitude: this.props.destination.longitude}, dialogCatch: false})} }>
+            {
+              this.state.fontLoaded ? (
+                <Text style={{ fontFamily: 'Montserrat-Bold', fontSize: 21, paddingBottom: "2%", paddingTop: "2%", paddingRight: "7%", paddingLeft: "7%" }}>Oui</Text>
+              ) : null
+            }
+          </TouchableOpacity>
+
+        </View>
+          ): null 
         }
         <View style={styles.buttonArea}>
           {
@@ -358,6 +380,21 @@ const styles = StyleSheet.create({
   },
   map: {
     ...StyleSheet.absoluteFillObject,
+  },
+  buttonCatch: {
+    flex: 1,
+    alignSelf: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    bottom: "20%",
+    backgroundColor: "#FAFAFA",
+    width: 280,
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5
   },
   textWaiting: {
     flex: 1,
