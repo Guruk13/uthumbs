@@ -21,6 +21,7 @@ class Waiting extends Component {
       interval: null,
       titleText: 'En attente d\'un conducteur à destination de ',
       driverName: null,
+      waitingTimeText: null
     };
   }
 
@@ -32,8 +33,6 @@ class Waiting extends Component {
   componentWillUnmount() {
     BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
   }
-
-
 
   handleBackPress = () => {
     this.onButtonQuitClick();
@@ -52,7 +51,6 @@ class Waiting extends Component {
               clearInterval(this.state.interval);
             }
           }
-
         }
       })
       .catch((error) => {
@@ -118,13 +116,16 @@ class Waiting extends Component {
           this.state.fontLoaded ? (
             <View style={styles.titleContainer}>
               <Text style={styles.title}> {this.state.titleText}{this.props.destination.nom}
+                {"\n"}
+                {"\n"}
+                {this.state.waitingTimeText}
               </Text>
-              <AnimatedEllipsis numberOfDots={3}
+              <AnimatedEllipsis numberOfDots={4}
                 animationDelay={150}
                 style={{
                   color: 'black',
                   fontSize: 20,
-                  fontWeight: 'bold'
+                  fontWeight: 'bold',
                 }}
               />
             </View>
@@ -193,7 +194,7 @@ class Waiting extends Component {
                 onPress={() => {
                   this.setState({ isDriverAvailable: false });
                   this.setState({ titleText: 'Le conducteur est en route pour vous prendre en charge en direction de : ' });
-                  //requete update a mettre a true
+                  this.setState({ waitingTimeText: 'Temps d\'attente estimé : X minutes.' });                  //requete update a mettre a true
                   fetch('http://185.212.225.143/api/waiting_user/edit/' + this.props.username, {
                     method: 'PUT',
                     headers: {
@@ -238,7 +239,13 @@ const styles = StyleSheet.create({
     fontFamily: 'Montserrat-Bold',
     textAlign: 'center',
     margin: 10,
-
+  },
+  waitingTextStyle: {
+    color: "black",
+    fontSize: 15,
+    fontFamily: 'Montserrat-Bold',
+    textAlign: 'center',
+    margin: 10,
   },
   titleContainer: {
     flexDirection: 'row',
