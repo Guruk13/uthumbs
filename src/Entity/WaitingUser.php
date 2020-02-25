@@ -109,7 +109,7 @@ class WaitingUser
         return $this->acceptWalker;
     }
 
-    public function setAcceptWalker(bool $acceptWalker): self
+    public function setAcceptWalker( $acceptWalker): self
     {
         $this->acceptWalker = $acceptWalker;
 
@@ -121,7 +121,7 @@ class WaitingUser
         return $this->acceptDriver;
     }
 
-    public function setAcceptDriver(bool $acceptDriver): self
+    public function setAcceptDriver($acceptDriver): self
     {
         $this->acceptDriver = $acceptDriver;
 
