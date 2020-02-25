@@ -213,7 +213,7 @@ class WaitingUserController extends FOSRestController
     }
     /**
      * Retrieves a collection of  WaitingUser within radius of pos
-     * @Rest\Post("/waiting_users/inradius")
+     * @Rest\Get("/waiting_users/inradius")
      */
     public function getInRadiusUsers( Request $request): View
     {
