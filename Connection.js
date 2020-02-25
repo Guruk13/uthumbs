@@ -41,7 +41,6 @@ class Connection extends Component {
         if (this.state.username != null) {
             this.state.username = this.state.username.trim();
             if (this.state.username.length > 0) {
-                console.log(this.state.username.trim().length);
                 this.setUsername('setUsername');
                 this.props.navigation.push('Home');
             }

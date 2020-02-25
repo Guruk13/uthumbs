@@ -21,7 +21,6 @@ class Waiting extends Component {
       interval: null,
       titleText: 'En attente d\'un conducteur à destination de ',
       driverName: null,
-      appState: AppState.currentState,
     };
   }
 
@@ -32,30 +31,9 @@ class Waiting extends Component {
 
   componentWillUnmount() {
     BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
-    AppState.removeEventListener('change', this._handleAppStateChange);
   }
 
-  _handleAppStateChange = (nextAppState) => {
 
-    this.setState({ appState: nextAppState });
-
-    console.log('etat = ' + nextAppState);
-
-    if (nextAppState === 'background') {
-      // Do something here on app background.
-      console.log("App is in Background Mode.")
-    }
-
-    if (nextAppState === 'active') {
-      // Do something here on app active foreground mode.
-      console.log("App is in Active Foreground Mode.")
-    }
-
-    if (nextAppState === 'inactive') {
-      // Do something here on app inactive mode.
-      console.log("App is in inactive Mode.")
-    }
-  };
 
   handleBackPress = () => {
     this.onButtonQuitClick();
@@ -91,9 +69,6 @@ class Waiting extends Component {
     this.setState({ fontLoaded: true });
 
     this.findCoordinates();
-
-    AppState.addEventListener('change', this._handleAppStateChange);
-
   }
 
 
