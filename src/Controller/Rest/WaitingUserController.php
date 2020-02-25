@@ -213,19 +213,14 @@ class WaitingUserController extends FOSRestController
     }
     /**
      * Retrieves a collection of  WaitingUser within radius of pos
-     * @Rest\Get("/waiting_users/inradius")
+     * @Rest\Get("/waiting_users/getuserinradius/radius")
      */
     public function getInRadiusUsers( Request $request): View
-    {
-
-        $parametersAsArray = [];
-        if ($content = $request->getContent()) {
-            $parametersAsArray = json_decode($content, true);
-        }
-        $longitude =$parametersAsArray['longitude'];
-        $latitude = $parametersAsArray['latitude'];
-        $radiusInKm = $parametersAsArray['radius'];
-        $limit = $parametersAsArray['limit'];
+    {   
+        $longitude = $request->query->get('longitude');
+        $latitude = $request->query->get('latitude');
+        $radiusInKm = $request->query->get('radius');
+        $limit = $request->query->get('limit');
 
         //$destination= strtolower(trim($destination));
         $repository = $this->getDoctrine()->getRepository(WaitingUser::class);
