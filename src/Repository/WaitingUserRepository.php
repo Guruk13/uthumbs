@@ -55,14 +55,14 @@ class WaitingUserRepository extends ServiceEntityRepository
     
 
     //get the points within a kilometer radius  close to a point in ZA WARUDO
-    public function findInRadius(float $givenLongitude ,float  $givenLatitude, float $radiusKm, int $thatmuch = 5  )
+    public function findInRadius(float $givenLongitude ,float  $givenLatitude, float $radiusKm, int $thatmuch = 5, string $destination )
     {
         $conn = $this->getEntityManager()
             ->getConnection();
     
         $sql2 =' SELECT *
         FROM (
-       SELECT w.name,w.latitude,w.longitude,
+       SELECT w.*
               p.radius,
               p.distance_unit
                        * DEGREES(ACOS(GREATEST(1.0, COS(RADIANS(p.latpoint))
@@ -81,6 +81,7 @@ class WaitingUserRepository extends ServiceEntityRepository
           AND w.longitude
            BETWEEN p.longpoint - (p.radius / (p.distance_unit * COS(RADIANS(p.latpoint))))
                AND p.longpoint + (p.radius / (p.distance_unit * COS(RADIANS(p.latpoint))))
+            WHERE w.destination = :destination
        ) AS d
        WHERE distance <= radius
        ORDER BY distance
@@ -92,6 +93,7 @@ class WaitingUserRepository extends ServiceEntityRepository
             'latitude' => $givenLatitude,
             'longitude' => $givenLongitude,
             'radiusInKm' => $radiusKm,
+            'destination' => $destination
         ));
         return $stmt->fetchAll();
     }

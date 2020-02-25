@@ -221,7 +221,8 @@ class WaitingUserController extends FOSRestController
         $latitude = $request->query->get('latitude');
         $radiusInKm = $request->query->get('radius');
         $limit = $request->query->get('limit');
-
+        $destination = $request->query->get('destination');
+        //yua sakuza
         //$destination= strtolower(trim($destination));
         $repository = $this->getDoctrine()->getRepository(WaitingUser::class);
         $waitingUsers =  $repository->findInradius($longitude, $latitude, $radiusInKm, $limit);
