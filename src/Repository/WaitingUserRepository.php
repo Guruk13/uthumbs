@@ -62,7 +62,7 @@ class WaitingUserRepository extends ServiceEntityRepository
     
         $sql2 =' SELECT *
         FROM (
-       SELECT w.*
+       SELECT w.*,
               p.radius,
               p.distance_unit
                        * DEGREES(ACOS(GREATEST(1.0, COS(RADIANS(p.latpoint))
@@ -81,7 +81,7 @@ class WaitingUserRepository extends ServiceEntityRepository
           AND w.longitude
            BETWEEN p.longpoint - (p.radius / (p.distance_unit * COS(RADIANS(p.latpoint))))
                AND p.longpoint + (p.radius / (p.distance_unit * COS(RADIANS(p.latpoint))))
-            WHERE w.destination = :destination
+          AND w.destination = :destination
        ) AS d
        WHERE distance <= radius
        ORDER BY distance
