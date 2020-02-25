@@ -225,9 +225,8 @@ class WaitingUserController extends FOSRestController
         //$destination= strtolower(trim($destination));
         $repository = $this->getDoctrine()->getRepository(WaitingUser::class);
         $waitingUsers =  $repository->findInradius($longitude, $latitude, $radiusInKm, $limit);
-
         // In case our GET was a success we need to return a 200 HTTP OK response with the collection of waitingUser object
-        return View::create($waitingUsers[0], Response::HTTP_OK);
+        return View::create($waitingUsers, Response::HTTP_OK);
     }
 
 

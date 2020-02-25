@@ -93,8 +93,7 @@ class WaitingUserRepository extends ServiceEntityRepository
             'longitude' => $givenLongitude,
             'radiusInKm' => $radiusKm,
         ));
-        var_dump($stmt->fetchAll());
-        die;
+        return $stmt->fetchAll();
     }
 
 
